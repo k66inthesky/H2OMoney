@@ -1,0 +1,176 @@
+/**
+ * H2O Smart DCA - 常數定義
+ */
+
+// ============ 合約地址 (Testnet) ============
+
+export const CONTRACT_ADDRESSES = {
+  PACKAGE_ID: '0x...', // 部署後填入
+  VAULT_CONFIG: '0x...',
+  OPTIMIZER_CONFIG: '0x...',
+} as const;
+
+// ============ 代幣地址 (Mainnet) ============
+
+export const TOKENS = {
+  SUI: {
+    address: '0x2::sui::SUI',
+    symbol: 'SUI',
+    name: 'Sui',
+    decimals: 9,
+    iconUrl: 'https://cryptologos.cc/logos/sui-sui-logo.png',
+  },
+  USDC: {
+    address: '0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN',
+    symbol: 'USDC',
+    name: 'USD Coin',
+    decimals: 6,
+    iconUrl: 'https://cryptologos.cc/logos/usd-coin-usdc-logo.png',
+  },
+  USDT: {
+    address: '0xc060006111016b8a020ad5b33834984a437aaa7d3c74c18e09a95d48aceab08c::coin::COIN',
+    symbol: 'USDT',
+    name: 'Tether USD',
+    decimals: 6,
+    iconUrl: 'https://cryptologos.cc/logos/tether-usdt-logo.png',
+  },
+  CETUS: {
+    address: '0x06864a6f921804860930db6ddbe2e16acdf8504495ea7481637a1c8b9a8fe54b::cetus::CETUS',
+    symbol: 'CETUS',
+    name: 'Cetus Token',
+    decimals: 9,
+    iconUrl: 'https://app.cetus.zone/static/media/cetus.png',
+  },
+  DEEP: {
+    address: '0xdeep...', // 需要更新正確地址
+    symbol: 'DEEP',
+    name: 'DeepBook Token',
+    decimals: 6,
+    iconUrl: '',
+  },
+} as const;
+
+// ============ Cetus 配置 ============
+
+export const CETUS_CONFIG = {
+  AGGREGATOR_URL: 'https://api-sui.cetus.zone/router_v2/find_routes',
+  CLMM_POOL_USDC_SUI: '0x...', // USDC-SUI Pool ID
+  SLIPPAGE_DEFAULT: 100, // 1% (basis points)
+  SLIPPAGE_MAX: 500, // 5%
+} as const;
+
+// ============ StableLayer 配置 ============
+
+export const STABLELAYER_CONFIG = {
+  BRAND_USD_ADDRESS: '0x...', // BrandUSD 代幣地址
+  VAULT_ADDRESS: '0x...',
+  ESTIMATED_APY: 0.05, // 5%
+} as const;
+
+// ============ DCA 配置 ============
+
+export const DCA_CONFIG = {
+  MIN_AMOUNT: 10_000_000n, // 10 USDC (6 decimals)
+  MAX_AMOUNT: 100_000_000_000n, // 100,000 USDC
+  MIN_PERIODS: 1,
+  MAX_PERIODS: 365,
+  KEEPER_REWARD_RATE: 10, // 0.1% (basis points)
+} as const;
+
+// ============ 時間常數 ============
+
+export const TIME = {
+  SECOND: 1000,
+  MINUTE: 60 * 1000,
+  HOUR: 60 * 60 * 1000,
+  DAY: 24 * 60 * 60 * 1000,
+  WEEK: 7 * 24 * 60 * 60 * 1000,
+} as const;
+
+// ============ Bot 配置 ============
+
+export const BOT_CONFIG = {
+  COMMANDS: {
+    START: 'start',
+    CONNECT: 'connect',
+    NEW: 'new',
+    LIST: 'list',
+    STATUS: 'status',
+    PAUSE: 'pause',
+    RESUME: 'resume',
+    CLOSE: 'close',
+    YIELD: 'yield',
+    SETTINGS: 'settings',
+    HELP: 'help',
+  },
+  MESSAGES: {
+    WELCOME: `
+🌊 *歡迎使用 H2O Smart DCA！*
+
+會賺錢的定投機器人 - 讓等待期間的錢也能生息。
+
+📋 *主要功能：*
+• 智能定投 - 定期自動買入目標代幣
+• 收益優化 - 閒置資金自動存入生息金庫
+• 多策略支援 - 固定金額、限價、多幣種
+
+使用 /new 開始建立你的第一個定投倉位
+使用 /help 查看所有指令
+    `,
+    HELP: `
+📖 *H2O Smart DCA 指令說明*
+
+🔗 *錢包相關*
+/connect - 連接 Sui 錢包
+
+💰 *定投管理*
+/new - 建立新定投倉位
+/list - 查看所有倉位
+/status <id> - 查看倉位詳情
+/pause <id> - 暫停定投
+/resume <id> - 恢復定投
+/close <id> - 關閉倉位
+
+📊 *收益查詢*
+/yield - 查看收益統計
+
+⚙️ *設定*
+/settings - 偏好設定
+/help - 顯示此說明
+    `,
+    NO_WALLET: '❌ 請先使用 /connect 連接錢包',
+    NO_POSITIONS: '📭 你還沒有任何定投倉位，使用 /new 建立一個吧！',
+    POSITION_NOT_FOUND: '❌ 找不到指定的倉位',
+    INVALID_INPUT: '❌ 輸入格式不正確，請重試',
+  },
+} as const;
+
+// ============ 網路配置 ============
+
+export const NETWORK = {
+  MAINNET: {
+    rpcUrl: 'https://fullnode.mainnet.sui.io:443',
+    explorerUrl: 'https://suiscan.xyz/mainnet',
+  },
+  TESTNET: {
+    rpcUrl: 'https://fullnode.testnet.sui.io:443',
+    explorerUrl: 'https://suiscan.xyz/testnet',
+  },
+  DEVNET: {
+    rpcUrl: 'https://fullnode.devnet.sui.io:443',
+    explorerUrl: 'https://suiscan.xyz/devnet',
+  },
+} as const;
+
+export type NetworkType = keyof typeof NETWORK;
+
+// ============ 錯誤訊息 ============
+
+export const ERRORS = {
+  WALLET_NOT_CONNECTED: 'WALLET_NOT_CONNECTED',
+  INSUFFICIENT_BALANCE: 'INSUFFICIENT_BALANCE',
+  INVALID_AMOUNT: 'INVALID_AMOUNT',
+  POSITION_NOT_FOUND: 'POSITION_NOT_FOUND',
+  TRANSACTION_FAILED: 'TRANSACTION_FAILED',
+  NETWORK_ERROR: 'NETWORK_ERROR',
+} as const;
