@@ -1,0 +1,33 @@
+{
+  "name": "h2o-smart-dca-bot",
+  "version": "0.1.0",
+  "description": "H2O Smart DCA Telegram Bot - 會賺錢的定投機器人",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@mysten/sui": "^1.0.0",
+    "@cetusprotocol/aggregator-sdk": "^1.0.0",
+    "grammy": "^1.21.0",
+    "node-cron": "^3.0.3",
+    "dotenv": "^16.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/node-cron": "^3.0.11",
+    "tsx": "^4.7.0",
+    "typescript": "^5.3.0",
+    "eslint": "^8.56.0",
+    "@typescript-eslint/eslint-plugin": "^6.19.0",
+    "@typescript-eslint/parser": "^6.19.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
