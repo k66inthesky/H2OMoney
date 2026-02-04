@@ -1,0 +1,52 @@
+# Dependencies
+node_modules/
+.pnp/
+.pnp.js
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Environment files (IMPORTANT: never commit these!)
+.env
+.env.local
+.env.*.local
+
+# Sui / Move
+contracts/build/
+*.mv
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Testing
+coverage/
+
+# Claude Code CLI (keep prompts-log.md for internal use)
+# Note: prompts-sanitized.md should be committed for AI disclosure
+.claude/
+
+# Secrets (double protection)
+*.pem
+*.key
+*secret*
+*private*
+
+# Temporary files
+tmp/
+temp/
+*.tmp
