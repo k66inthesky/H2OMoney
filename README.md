@@ -8,7 +8,7 @@
 
 ## 🌊 概述
 
-H2O Smart DCA 是一款基於 Sui 區塊鏈的智能定投機器人，整合 Cetus 聚合器和 stablelayer SDK，讓等待定投的資金也能自動生息。透過 BrandUSD 底層收益與 Cetus CLMM 窄區間 LP 手續費，實現 **8-20% APY 雙層收益**。
+H2O Smart DCA 是一款基於 Sui 區塊鏈的智能定投機器人，整合 Cetus 聚合器和 stablelayer SDK，讓等待定投的資金也能自動生息。透過 BrandUSD 底層收益與 Cetus CLMM 窄區間 LP 手續費**。
 
 **黑客松：** Sui Vibe Hackathon 2026
 **參賽賽道：** Cetus + stablelayer（雙賽道）
@@ -160,8 +160,48 @@ H2OMoney/
 
 ```
 存入 400 USDC → 自動轉 H2OUSD 生息 → 每週取出 100 買 SUI
-等待期間的錢也在賺利息，預估額外收益 8-20% APY
+等待期間的錢也在賺利息，產生額外收益
 ```
+
+### 🎯 H2OUSD - Shadow Token / Receipt Token 機制
+
+在沒錢的情況下，H2OUSD 的幣價來源設計路徑：
+
+#### **影子代幣模式 (Shadow Token / Receipt Token)** ✅
+
+> **為什麼能成功？因為它不需要外部餵價（Oracle），也不需要任何人去撐盤。
+
+**原理**：H2OUSD 不是獨立的幣，而是用戶存入 USDC 的「收據」。
+
+**幣價來源**：始終 1:1 兌換回金庫裡的資產。
+
+**機制**：
+
+- 用戶存入 100 USDC → 協議鑄造 100 H2OUSD 給用戶
+- **H2OUSD 的價值** = (金庫總資產 / 總發行量)
+- 因為金庫資產在 Cetus 或 StableLayer 賺利息，H2OUSD 的「內在價值」會隨時間超過 1 美元（例如變 1.05 美元）
+
+**範例**：
+
+```
+初始狀態：
+- 8 USDC 總資產 / 8 H2OUSD 總供應量 = 1.00 USDC/H2OUSD
+
+賺取收益後：
+- 9 USDC 總資產 / 8 H2OUSD 總供應量 = 1.125 USDC/H2OUSD
+- 每個 H2OUSD 自動增值 12.5% ✨
+
+提款後重新計算：
+- 3.43125 USDC / 3 H2OUSD = 1.14375 USDC/H2OUSD
+- 剩餘 H2OUSD 持有者獲得更高價值 ✨
+```
+
+**優點**：
+
+- ✅ 不需要贊助，只要有第一個用戶存錢，就有價值
+- ✅ 價值隨金庫收益自動增長
+- ✅ 無需 rebase，持有數量不變但價值提升
+- ✅ 公平分配：所有持有者按比例享受收益
 
 ### 雙層收益來源
 
@@ -179,6 +219,7 @@ H2OMoney/
 This project was developed with AI assistance as part of the Sui Vibe Hackathon 2026 requirements.
 
 **AI Tools Used:**
+
 - Claude Code CLI (claude-sonnet-4-20250514)
 
 Full prompt disclosure: [docs/ai-disclosure/prompts-sanitized.md](./docs/ai-disclosure/prompts-sanitized.md)
@@ -186,6 +227,7 @@ Full prompt disclosure: [docs/ai-disclosure/prompts-sanitized.md](./docs/ai-disc
 ## 🛠️ 技術棧
 
 ### 區塊鏈層
+
 - **Sui Move 2024** - 智能合約開發（使用最新語法）
 - **Sui SDK (TypeScript)** - 最新版本
 - **Cetus Aggregator** - 最優路徑交易
@@ -193,12 +235,14 @@ Full prompt disclosure: [docs/ai-disclosure/prompts-sanitized.md](./docs/ai-disc
 - **stablelayer SDK** - BrandUSD 整合
 
 ### 應用層
+
 - **Grammy** - Telegram Bot 框架
 - **TypeScript** - 主要開發語言
 - **Node.js** - 運行環境
 - **node-cron** - 定時任務排程
 
 ### 前端
+
 - **Next.js 14** - React 框架 (App Router)
 - **@mysten/dapp-kit** - Sui 錢包連接
 - **TailwindCSS** - 樣式框架

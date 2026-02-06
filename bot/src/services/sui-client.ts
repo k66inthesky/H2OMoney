@@ -2,10 +2,10 @@
  * H2O Smart DCA - Sui 客戶端服務
  */
 
-import { SuiClient, SuiTransactionBlockResponse } from '@mysten/sui/client';
-import { TransactionBlock } from '@mysten/sui/transactions';
+import { SuiClient, type SuiTransactionBlockResponse } from '@mysten/sui/client';
+import { Transaction } from '@mysten/sui/transactions';
 import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
-import { NETWORK, CONTRACT_ADDRESSES, TOKENS } from '../../../shared/constants/index.js';
+import { NETWORK, CONTRACT_ADDRESSES, TOKENS } from '../utils/constants.js';
 
 export class SuiClientService {
   private client: SuiClient;
@@ -104,22 +104,24 @@ export class SuiClientService {
       const receipts: any[] = [];
 
       for (const obj of objects.data) {
-        const type = obj.data?.type;
+        const data = obj.data;
+        if (!data) continue;
+        const type = data.type;
         if (!type) continue;
 
         // 檢查是否為 H2OUSD Coin
         if (type.includes('::h2o_usd::H2O_USD>')) {
           h2ousdCoins.push({
-            id: obj.data.objectId,
-            balance: (obj.data.content as any)?.fields?.balance || '0',
+            id: data.objectId,
+            balance: (data.content as any)?.fields?.balance || '0',
           });
         }
 
         // 檢查是否為 DepositReceipt
         if (type.includes('::SecureDepositReceipt')) {
-          const fields = (obj.data.content as any)?.fields;
+          const fields = (data.content as any)?.fields;
           receipts.push({
-            id: obj.data.objectId,
+            id: data.objectId,
             owner: fields?.owner,
             vaultId: fields?.vault_id,
             usdcDeposited: fields?.usdc_deposited,
@@ -157,7 +159,7 @@ export class SuiClientService {
     }
 
     try {
-      const tx = new TransactionBlock();
+      const tx = new Transaction();
 
       // 分割 USDC coin 如果需要
       const [coinToUse] = tx.splitCoins(tx.object(usdcCoinId), [amount]);
@@ -173,9 +175,9 @@ export class SuiClientService {
         typeArguments: [TOKENS.USDC.address],
       });
 
-      const result = await this.client.signAndExecuteTransactionBlock({
+      const result = await this.client.signAndExecuteTransaction({
         signer: this.keypair,
-        transactionBlock: tx,
+        transaction: tx,
         options: {
           showEffects: true,
           showEvents: true,
@@ -202,7 +204,7 @@ export class SuiClientService {
     }
 
     try {
-      const tx = new TransactionBlock();
+      const tx = new Transaction();
 
       // 調用 secure_withdraw_entry
       tx.moveCall({
@@ -217,9 +219,9 @@ export class SuiClientService {
         typeArguments: [TOKENS.USDC.address],
       });
 
-      const result = await this.client.signAndExecuteTransactionBlock({
+      const result = await this.client.signAndExecuteTransaction({
         signer: this.keypair,
-        transactionBlock: tx,
+        transaction: tx,
         options: {
           showEffects: true,
           showEvents: true,

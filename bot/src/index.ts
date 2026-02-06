@@ -2,6 +2,12 @@
  * H2O Smart DCA Bot - 入口文件
  */
 
+// WSL2 環境 IPv6 不通，強制 Node.js (undici) 使用 IPv4
+import { setDefaultAutoSelectFamily } from 'net';
+import dns from 'dns';
+setDefaultAutoSelectFamily(false);
+dns.setDefaultResultOrder('ipv4first');
+
 import 'dotenv/config';
 import { createBot } from './bot.js';
 import { startScheduler } from './scheduler/index.js';
@@ -15,13 +21,19 @@ async function main() {
     throw new Error('TELEGRAM_BOT_TOKEN is required');
   }
 
+  console.log('✅ Bot token found');
+
   // 建立並啟動 Bot
   const bot = createBot(botToken);
+
+  console.log('✅ Bot instance created');
 
   // 啟動定時任務排程器
   startScheduler();
 
   // 啟動 Bot
+  console.log('🚀 Starting bot polling...');
+  
   await bot.start({
     onStart: (botInfo) => {
       console.log(`✅ Bot started as @${botInfo.username}`);
@@ -33,6 +45,7 @@ async function main() {
       console.log('   /help - 幫助說明');
     },
   });
+  console.log('✅ Bot is now listening for messages...');
 }
 
 main().catch((error) => {

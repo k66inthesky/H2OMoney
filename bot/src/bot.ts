@@ -15,7 +15,7 @@ import {
   yieldCommand,
   connectCommand,
 } from './commands/index.js';
-import { ConversationState, ConversationStep, DCAConfig, StrategyType, IntervalType } from '../../shared/types/index.js';
+import { ConversationState, ConversationStep, DCAConfig, StrategyType, IntervalType } from './utils/types.js';
 import { positionService } from './services/index.js';
 
 // Session 類型
@@ -98,8 +98,8 @@ async function handleAmountInput(ctx: BotContext, text: string) {
     return;
   }
 
-  if (amount < 10) {
-    await ctx.reply('❌ 最小金額為 10 USDC');
+  if (amount < 1) {
+    await ctx.reply('❌ 最小金額為 1 USDC');
     return;
   }
 
@@ -261,7 +261,10 @@ async function handleCallbackQuery(ctx: BotContext) {
       await ctx.editMessageText(
         `✅ *Smart DCA 倉位已建立！*
 
-📋 倉位 ID: \`${position.id}\`
+📋 倉位 ID（點擊複製）：
+\`\`\`
+${position.id}
+\`\`\`
 
 🔄 *運作流程：*
 1. 資金已轉換為 H2OUSD
@@ -270,13 +273,14 @@ async function handleCallbackQuery(ctx: BotContext) {
 
 ⏰ 下次執行：${nextExecution} UTC
 
-使用 /status ${position.id} 查看詳情`,
+使用 /status \`${position.id}\` 查看詳情`,
         { parse_mode: 'Markdown' }
       );
     } catch (error) {
       console.error('Failed to create position:', error);
+      const errMsg = error instanceof Error ? error.message : String(error);
       await ctx.editMessageText(
-        `❌ 建立倉位失敗，請稍後再試\n\n錯誤：${error}`
+        `❌ 建立倉位失敗，請稍後再試\n\n錯誤：${errMsg}`
       );
     }
 
@@ -333,6 +337,32 @@ async function handleCallbackQuery(ctx: BotContext) {
     } else {
       await ctx.answerCallbackQuery({ text: '❌ 恢復失敗' });
     }
+    return;
+  }
+
+  // 關閉倉位（顯示確認對話框）
+  if (data.startsWith('close_') && !data.startsWith('close_confirm_')) {
+    const positionId = data.replace('close_', '');
+    const position = positionService.getPosition(positionId);
+    if (!position) {
+      await ctx.answerCallbackQuery({ text: '❌ 找不到倉位' });
+      return;
+    }
+
+    await ctx.editMessageText(
+      `⚠️ *確認關閉倉位*\n\n倉位 ID: \`${positionId}\`\n\n關閉後：\n• 剩餘資金將退回你的錢包\n• 累計的收益將一併提取\n• 此操作無法撤銷\n\n確定要關閉嗎？`,
+      {
+        parse_mode: 'Markdown',
+        reply_markup: {
+          inline_keyboard: [
+            [
+              { text: '✅ 確認關閉', callback_data: `confirm_close_${positionId}` },
+              { text: '❌ 取消', callback_data: 'cancel_close' },
+            ],
+          ],
+        },
+      }
+    );
     return;
   }
 

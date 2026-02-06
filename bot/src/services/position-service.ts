@@ -2,7 +2,7 @@
  * H2O Smart DCA - 倉位管理服務
  */
 
-import { DCAPosition, DCAConfig, PositionStatus, IntervalType, INTERVAL_MS } from '../../../shared/types/index.js';
+import { DCAPosition, DCAConfig, PositionStatus, IntervalType, INTERVAL_MS } from '../utils/types.js';
 import { suiClient } from './sui-client.js';
 
 /**

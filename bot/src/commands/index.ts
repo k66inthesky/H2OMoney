@@ -3,8 +3,8 @@
  */
 
 import type { BotContext } from '../bot.js';
-import { ConversationStep, StrategyType, IntervalType } from '../../../shared/types/index.js';
-import { BOT_CONFIG } from '../../../shared/constants/index.js';
+import { ConversationStep, StrategyType, IntervalType } from '../utils/types.js';
+import { BOT_CONFIG } from '../utils/constants.js';
 import { positionService, suiClient } from '../services/index.js';
 
 // /start - 啟動機器人
