@@ -1,0 +1,42 @@
+=== H2O Smart DCA 部署摘要 ===
+部署時間: $(date)
+部署錢包: H2OMoney_wallet
+部署地址: 0xde3020192a90f75c6d95ba8676e27e1993c85235477d8138867a11423743a156
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Package ID: 
+0x1823aa8a2c15773de65c06ccb5e801be4edb8e4266513dd680865f6ff5220f2c
+
+Transaction Digest:
+2PLF1osMpzJ5Mw4EaaGEfynk16sbPJk3cvz4ibhcXWAP
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+已部署的模組：
+✓ h2o_usd - H2OUSD Receipt Token
+✓ h2o_vault (original) - 基礎金庫
+✓ h2o_vault_v2 - Receipt Token 版本金庫
+✓ h2o_vault_v3_secure - 安全增強版金庫
+✓ dca_position - DCA 倉位管理
+✓ yield_optimizer - 收益優化器
+✓ strategy - 定投策略模組
+✓ keeper - Keeper 自動執行
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+重要對象：
+
+H2O_USD TreasuryCap ObjectID:
+$(grep "TreasuryCap" /home/k66/H2OMoney/printtt/deployment_log.txt -A 3 | grep "ObjectID" | head -1 | awk '{print $NF}')
+
+H2O_USD CoinMetadata ObjectID:
+$(grep "CoinMetadata" /home/k66/H2OMoney/printtt/deployment_log.txt -A 3 | grep "ObjectID" | head -1 | awk '{print $NF}')
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+瀏覽器查看：
+https://testnet.suivision.xyz/txblock/2PLF1osMpzJ5Mw4EaaGEfynk16sbPJk3cvz4ibhcXWAP
+
+https://testnet.suivision.xyz/package/0x1823aa8a2c15773de65c06ccb5e801be4edb8e4266513dd680865f6ff5220f2c
+
