@@ -12,8 +12,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@mysten/sui": "^1.0.0",
-    "@cetusprotocol/aggregator-sdk": "^1.0.0",
+    "@mysten/sui": "^1.14.0",
     "grammy": "^1.21.0",
     "node-cron": "^3.0.3",
     "dotenv": "^16.4.0"
