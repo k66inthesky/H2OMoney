@@ -15,7 +15,8 @@ import {
   yieldCommand,
   connectCommand,
 } from './commands/index.js';
-import { ConversationState, ConversationStep } from '../../shared/types/index.js';
+import { ConversationState, ConversationStep, DCAConfig, StrategyType, IntervalType } from '../../shared/types/index.js';
+import { positionService } from './services/index.js';
 
 // Session 類型
 interface SessionData {
@@ -234,24 +235,50 @@ async function handleCallbackQuery(ctx: BotContext) {
   if (data === 'confirm_create') {
     const { data: configData } = ctx.session.conversation;
 
-    // TODO: 實際調用合約建立倉位
-    const positionId = `h2o_dca_${Date.now().toString(36)}`;
+    try {
+      // 構建 DCA 配置
+      const dcaConfig: DCAConfig = {
+        sourceToken: 'USDC',
+        targetTokens: configData.targetTokens || [],
+        amountPerPeriod: configData.amountPerPeriod || '0',
+        interval: mapIntervalStringToEnum(configData.interval),
+        totalPeriods: configData.totalPeriods || 1,
+        strategy: configData.strategy || StrategyType.FIXED,
+        limitPrice: configData.limitPrice,
+        enableYield: true,
+        autoCompound: false,
+      };
 
-    await ctx.editMessageText(
-      `✅ *Smart DCA 倉位已建立！*
+      // 創建倉位（暫時使用 mock user address）
+      const userAddress = ctx.session.walletAddress || `user_${ctx.from?.id}`;
+      const position = await positionService.createPosition(userAddress, dcaConfig);
 
-📋 倉位 ID: \`${positionId}\`
+      const nextExecution = new Date(position.nextExecutionTime)
+        .toISOString()
+        .replace('T', ' ')
+        .substring(0, 16);
+
+      await ctx.editMessageText(
+        `✅ *Smart DCA 倉位已建立！*
+
+📋 倉位 ID: \`${position.id}\`
 
 🔄 *運作流程：*
 1. 資金已轉換為 H2OUSD
 2. 資金已投入生息金庫
 3. 每${getIntervalText(configData.interval)}自動執行定投
 
-⏰ 下次執行：${getNextExecutionTime(configData.interval)}
+⏰ 下次執行：${nextExecution} UTC
 
-使用 /status ${positionId} 查看詳情`,
-      { parse_mode: 'Markdown' }
-    );
+使用 /status ${position.id} 查看詳情`,
+        { parse_mode: 'Markdown' }
+      );
+    } catch (error) {
+      console.error('Failed to create position:', error);
+      await ctx.editMessageText(
+        `❌ 建立倉位失敗，請稍後再試\n\n錯誤：${error}`
+      );
+    }
 
     // 重置對話狀態
     ctx.session.conversation = {
@@ -269,6 +296,65 @@ async function handleCallbackQuery(ctx: BotContext) {
     };
 
     await ctx.editMessageText('❌ 已取消建立定投倉位');
+    return;
+  }
+
+  // 暫停倉位
+  if (data.startsWith('pause_')) {
+    const positionId = data.replace('pause_', '');
+    const success = await positionService.pausePosition(positionId);
+
+    if (success) {
+      await ctx.editMessageText(
+        `⏸ 倉位 \`${positionId}\` 已暫停\n\n資金將繼續在生息金庫中賺取收益。`,
+        { parse_mode: 'Markdown' }
+      );
+    } else {
+      await ctx.answerCallbackQuery({ text: '❌ 暫停失敗' });
+    }
+    return;
+  }
+
+  // 恢復倉位
+  if (data.startsWith('resume_')) {
+    const positionId = data.replace('resume_', '');
+    const success = await positionService.resumePosition(positionId);
+
+    if (success) {
+      const position = positionService.getPosition(positionId);
+      const nextExecution = position
+        ? new Date(position.nextExecutionTime).toISOString().replace('T', ' ').substring(0, 16)
+        : 'Unknown';
+
+      await ctx.editMessageText(
+        `▶️ 倉位 \`${positionId}\` 已恢復\n\n下次執行時間：${nextExecution} UTC`,
+        { parse_mode: 'Markdown' }
+      );
+    } else {
+      await ctx.answerCallbackQuery({ text: '❌ 恢復失敗' });
+    }
+    return;
+  }
+
+  // 確認關閉倉位
+  if (data.startsWith('confirm_close_')) {
+    const positionId = data.replace('confirm_close_', '');
+    const success = await positionService.closePosition(positionId);
+
+    if (success) {
+      await ctx.editMessageText(
+        `✅ 倉位 \`${positionId}\` 已關閉\n\n剩餘資金和收益將退回你的錢包。`,
+        { parse_mode: 'Markdown' }
+      );
+    } else {
+      await ctx.answerCallbackQuery({ text: '❌ 關閉失敗' });
+    }
+    return;
+  }
+
+  // 取消關閉
+  if (data === 'cancel_close') {
+    await ctx.editMessageText('❌ 已取消關閉倉位');
     return;
   }
 }
@@ -294,4 +380,14 @@ function getNextExecutionTime(interval?: string): string {
   const ms = msMap[interval || ''] || msMap.weekly;
   const next = new Date(now.getTime() + ms);
   return next.toISOString().replace('T', ' ').substring(0, 16) + ' UTC';
+}
+
+function mapIntervalStringToEnum(interval?: string): IntervalType {
+  const map: Record<string, IntervalType> = {
+    daily: IntervalType.DAILY,
+    weekly: IntervalType.WEEKLY,
+    biweekly: IntervalType.BIWEEKLY,
+    monthly: IntervalType.MONTHLY,
+  };
+  return map[interval || ''] || IntervalType.WEEKLY;
 }

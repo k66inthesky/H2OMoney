@@ -3,8 +3,9 @@
  */
 
 import type { BotContext } from '../bot.js';
-import { ConversationStep, StrategyType } from '../../../shared/types/index.js';
+import { ConversationStep, StrategyType, IntervalType } from '../../../shared/types/index.js';
 import { BOT_CONFIG } from '../../../shared/constants/index.js';
+import { positionService, suiClient } from '../services/index.js';
 
 // /start - 啟動機器人
 export async function startCommand(ctx: BotContext) {
@@ -82,8 +83,9 @@ export async function newCommand(ctx: BotContext) {
 
 // /list - 查看所有倉位
 export async function listCommand(ctx: BotContext) {
-  // TODO: 從鏈上查詢用戶的所有倉位
-  const positions = await getMockPositions();
+  // 暫時使用 mock user address，實際應該從 session 中獲取
+  const userAddress = ctx.session.walletAddress || 'mock_user';
+  const positions = positionService.getUserPositions(userAddress);
 
   if (positions.length === 0) {
     await ctx.reply(BOT_CONFIG.MESSAGES.NO_POSITIONS);
@@ -94,9 +96,13 @@ export async function listCommand(ctx: BotContext) {
 
   for (const pos of positions) {
     const statusEmoji = pos.status === 'active' ? '🟢' : pos.status === 'paused' ? '🟡' : '✅';
-    message += `${statusEmoji} *${pos.id}*\n`;
-    message += `   ${pos.sourceToken} → ${pos.targetToken}\n`;
-    message += `   ${pos.amountPerPeriod} USDC / ${pos.interval}\n`;
+    const targetToken = pos.targetTokens[0]?.symbol || 'UNKNOWN';
+    const amountUsdc = Number(pos.amountPerPeriod) / 1_000_000;
+    const intervalText = getIntervalTextFromMs(pos.intervalMs);
+
+    message += `${statusEmoji} \`${pos.id}\`\n`;
+    message += `   ${pos.sourceToken} → ${targetToken}\n`;
+    message += `   ${amountUsdc} USDC / ${intervalText}\n`;
     message += `   進度：${pos.executedPeriods}/${pos.totalPeriods} 期\n\n`;
   }
 
@@ -115,16 +121,35 @@ export async function statusCommand(ctx: BotContext) {
     return;
   }
 
-  // TODO: 從鏈上查詢倉位詳情
-  const position = await getMockPosition(positionId);
+  const position = positionService.getPosition(positionId);
 
   if (!position) {
     await ctx.reply(BOT_CONFIG.MESSAGES.POSITION_NOT_FOUND);
     return;
   }
 
-  const statusText = position.status === 'active' ? '🟢 運行中' :
-                     position.status === 'paused' ? '🟡 已暫停' : '✅ 已完成';
+  const statusText =
+    position.status === 'active'
+      ? '🟢 運行中'
+      : position.status === 'paused'
+      ? '🟡 已暫停'
+      : position.status === 'completed'
+      ? '✅ 已完成'
+      : '❌ 已關閉';
+
+  const targetToken = position.targetTokens[0]?.symbol || 'UNKNOWN';
+  const amountUsdc = Number(position.amountPerPeriod) / 1_000_000;
+  const totalInvested = Number(position.totalInvested) / 1_000_000;
+  const totalAcquired = Number(position.totalAcquired) / 1e9; // SUI 9 decimals
+  const avgPrice = totalAcquired > 0 ? totalInvested / totalAcquired : 0;
+  const intervalText = getIntervalTextFromMs(position.intervalMs);
+  const nextExecution = new Date(position.nextExecutionTime)
+    .toISOString()
+    .replace('T', ' ')
+    .substring(0, 16);
+
+  // 查詢收益統計
+  const yieldStats = await positionService.getPositionYield(positionId);
 
   await ctx.reply(
     `📊 *倉位詳情*
@@ -134,22 +159,26 @@ export async function statusCommand(ctx: BotContext) {
 
 *定投設定:*
 • 投入代幣：${position.sourceToken}
-• 目標代幣：${position.targetToken}
-• 每期金額：${position.amountPerPeriod} USDC
-• 週期：${position.interval}
+• 目標代幣：${targetToken}
+• 每期金額：${amountUsdc.toFixed(2)} USDC
+• 週期：${intervalText}
 • 進度：${position.executedPeriods}/${position.totalPeriods} 期
 
 *統計數據:*
-• 累計投入：${position.totalInvested} USDC
-• 累計獲得：${position.totalAcquired} ${position.targetToken}
-• 平均價格：${position.averagePrice} USDC
+• 累計投入：${totalInvested.toFixed(2)} USDC
+• 累計獲得：${totalAcquired.toFixed(4)} ${targetToken}
+• 平均價格：${avgPrice.toFixed(4)} USDC
 
 *收益優化:*
-• 金庫餘額：${position.vaultBalance} H2OUSD
-• 累計收益：${position.yieldEarned} USDC
-• 當前 APY：~12%
+${
+  yieldStats
+    ? `• 當前價值：${yieldStats.currentValue.toFixed(2)} USDC
+• 累計收益：${yieldStats.totalYield.toFixed(2)} USDC
+• 當前 APY：~${(yieldStats.apy * 100).toFixed(1)}%`
+    : '• 暫無收益數據'
+}
 
-⏰ 下次執行：${position.nextExecutionTime}`,
+⏰ 下次執行：${nextExecution} UTC`,
     {
       parse_mode: 'Markdown',
       reply_markup: {
@@ -160,7 +189,7 @@ export async function statusCommand(ctx: BotContext) {
             ? [{ text: '▶️ 恢復', callback_data: `resume_${position.id}` }]
             : [],
           [{ text: '❌ 關閉倉位', callback_data: `close_${position.id}` }],
-        ].filter(row => row.length > 0),
+        ].filter((row) => row.length > 0),
       },
     }
   );
@@ -176,10 +205,19 @@ export async function pauseCommand(ctx: BotContext) {
     return;
   }
 
-  // TODO: 調用合約暫停倉位
-  await ctx.reply(`⏸ 倉位 \`${positionId}\` 已暫停\n\n資金將繼續在生息金庫中賺取收益。`, {
-    parse_mode: 'Markdown',
-  });
+  const success = await positionService.pausePosition(positionId);
+
+  if (!success) {
+    await ctx.reply('❌ 找不到倉位或無法暫停');
+    return;
+  }
+
+  await ctx.reply(
+    `⏸ 倉位 \`${positionId}\` 已暫停\n\n資金將繼續在生息金庫中賺取收益。`,
+    {
+      parse_mode: 'Markdown',
+    }
+  );
 }
 
 // /resume <id> - 恢復定投
@@ -192,10 +230,24 @@ export async function resumeCommand(ctx: BotContext) {
     return;
   }
 
-  // TODO: 調用合約恢復倉位
-  await ctx.reply(`▶️ 倉位 \`${positionId}\` 已恢復\n\n下次執行時間：${getNextExecutionTime()}`, {
-    parse_mode: 'Markdown',
-  });
+  const success = await positionService.resumePosition(positionId);
+
+  if (!success) {
+    await ctx.reply('❌ 找不到倉位或無法恢復');
+    return;
+  }
+
+  const position = positionService.getPosition(positionId);
+  const nextExecution = position
+    ? new Date(position.nextExecutionTime).toISOString().replace('T', ' ').substring(0, 16)
+    : 'Unknown';
+
+  await ctx.reply(
+    `▶️ 倉位 \`${positionId}\` 已恢復\n\n下次執行時間：${nextExecution} UTC`,
+    {
+      parse_mode: 'Markdown',
+    }
+  );
 }
 
 // /close <id> - 關閉倉位
@@ -205,6 +257,12 @@ export async function closeCommand(ctx: BotContext) {
 
   if (!positionId) {
     await ctx.reply('請提供倉位 ID，例如：/close h2o_dca_abc123');
+    return;
+  }
+
+  const position = positionService.getPosition(positionId);
+  if (!position) {
+    await ctx.reply('❌ 找不到指定的倉位');
     return;
   }
 
@@ -235,86 +293,62 @@ export async function closeCommand(ctx: BotContext) {
 
 // /yield - 查看收益統計
 export async function yieldCommand(ctx: BotContext) {
-  // TODO: 從鏈上查詢收益數據
-  const yieldStats = await getMockYieldStats();
+  try {
+    // 查詢金庫狀態
+    const vaultState = await suiClient.getVaultState();
+    const h2ousdValue = await suiClient.getH2OUSDValue();
 
-  await ctx.reply(
-    `💰 *收益統計*
+    // 暫時使用 mock user address
+    const userAddress = ctx.session.walletAddress || 'mock_user';
+    const userAssets = await suiClient.getUserAssets(userAddress);
+
+    const totalDeposited = Number(vaultState.totalDeposited) / 1_000_000;
+    const totalYield = Number(vaultState.totalYieldEarned) / 1_000_000;
+    const userH2ousd = Number(userAssets.totalH2OUSD) / 1_000_000;
+    const userValue = userH2ousd * h2ousdValue;
+
+    // 模擬分拆收益來源（實際應該從合約事件查詢）
+    const yieldFromBrandUsd = totalYield * 0.6;
+    const yieldFromClmm = totalYield * 0.4;
+
+    // 計算 APY（簡化計算）
+    const apy = totalDeposited > 0 ? (totalYield / totalDeposited) * 100 : 0;
+
+    await ctx.reply(
+      `💰 *收益統計*
 
 *總覽:*
-• 總存入：${yieldStats.totalDeposited} USDC
-• 當前餘額：${yieldStats.currentBalance} H2OUSD
-• 總收益：${yieldStats.totalYield} USDC
+• 總存入：${totalDeposited.toFixed(2)} USDC
+• 當前餘額：${userH2ousd.toFixed(2)} H2OUSD
+• 當前價值：${userValue.toFixed(2)} USDC
+• 總收益：${totalYield.toFixed(2)} USDC
 
 *收益來源:*
-• BrandUSD 底層收益：${yieldStats.yieldFromBrandUsd} USDC
-• CLMM LP 手續費：${yieldStats.yieldFromClmm} USDC
+• BrandUSD 底層收益：${yieldFromBrandUsd.toFixed(2)} USDC
+• CLMM LP 手續費：${yieldFromClmm.toFixed(2)} USDC
 
-*當前 APY:* ~${yieldStats.currentApy}%
+*當前 APY:* ~${apy.toFixed(1)}%
+*H2OUSD 價值:* ${h2ousdValue.toFixed(6)} USDC
 
 📈 收益每小時自動累積，無需手動操作`,
-    { parse_mode: 'Markdown' }
-  );
+      { parse_mode: 'Markdown' }
+    );
+  } catch (error) {
+    console.error('Failed to fetch yield stats:', error);
+    await ctx.reply('❌ 無法獲取收益數據，請稍後再試');
+  }
 }
 
-// ============ Mock 數據（開發用）============
+// ============ 輔助函數 ============
 
-async function getMockPositions() {
-  return [
-    {
-      id: 'h2o_dca_abc123',
-      sourceToken: 'USDC',
-      targetToken: 'SUI',
-      amountPerPeriod: '100',
-      interval: '每週',
-      totalPeriods: 4,
-      executedPeriods: 1,
-      status: 'active',
-    },
-    {
-      id: 'h2o_dca_def456',
-      sourceToken: 'USDC',
-      targetToken: 'CETUS',
-      amountPerPeriod: '50',
-      interval: '每日',
-      totalPeriods: 30,
-      executedPeriods: 15,
-      status: 'active',
-    },
-  ];
-}
-
-async function getMockPosition(id: string) {
-  return {
-    id,
-    sourceToken: 'USDC',
-    targetToken: 'SUI',
-    amountPerPeriod: '100',
-    interval: '每週',
-    totalPeriods: 4,
-    executedPeriods: 1,
-    status: 'active',
-    totalInvested: '100',
-    totalAcquired: '25.5',
-    averagePrice: '3.92',
-    vaultBalance: '305.2',
-    yieldEarned: '5.2',
-    nextExecutionTime: '2026-02-11 00:00 UTC',
-  };
-}
-
-async function getMockYieldStats() {
-  return {
-    totalDeposited: '1000',
-    currentBalance: '1052.3',
-    totalYield: '52.3',
-    yieldFromBrandUsd: '32.1',
-    yieldFromClmm: '20.2',
-    currentApy: 12.5,
-  };
-}
-
-function getNextExecutionTime(): string {
-  const next = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-  return next.toISOString().replace('T', ' ').substring(0, 16) + ' UTC';
+/**
+ * 根據週期毫秒數獲取文字描述
+ */
+function getIntervalTextFromMs(ms: number): string {
+  const day = 24 * 60 * 60 * 1000;
+  if (ms === day) return '每日';
+  if (ms === 7 * day) return '每週';
+  if (ms === 14 * day) return '每兩週';
+  if (ms === 30 * day) return '每月';
+  return `每 ${Math.floor(ms / day)} 天`;
 }

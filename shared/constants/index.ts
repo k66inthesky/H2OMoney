@@ -5,9 +5,17 @@
 // ============ 合約地址 (Testnet) ============
 
 export const CONTRACT_ADDRESSES = {
-  PACKAGE_ID: '0x...', // 部署後填入
-  VAULT_CONFIG: '0x...',
-  OPTIMIZER_CONFIG: '0x...',
+  // H2O Smart DCA Package (V3)
+  PACKAGE_ID: '0x80c0e4bad8df4871589581ff679ce214a18c7357b063376c3f425b73a34a05f0',
+
+  // H2OUSD TreasuryCap
+  H2OUSD_TREASURY_CAP: '0x1a38f77f1d6f2de33e72034b398a9d4734ece6eb3d30dff04b33c40aeb9a4e9e',
+
+  // Secure Vault (Shared Object)
+  VAULT_CONFIG: '0x629a54343d8ec44e333edd9793d1df573c5329f37743d194ddb3a5b853f904ce',
+
+  // Original Package ID (for reference)
+  ORIGINAL_PACKAGE_ID: '0x1823aa8a2c15773de65c06ccb5e801be4edb8e4266513dd680865f6ff5220f2c',
 } as const;
 
 // ============ 代幣地址 (Mainnet) ============
@@ -21,9 +29,9 @@ export const TOKENS = {
     iconUrl: 'https://cryptologos.cc/logos/sui-sui-logo.png',
   },
   USDC: {
-    address: '0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN',
+    address: '0xa1ec7fc00a6f40db9693ad1415d0c193ad3906494428cf252621037bd7117e29::usdc::USDC',
     symbol: 'USDC',
-    name: 'USD Coin',
+    name: 'USD Coin (Testnet)',
     decimals: 6,
     iconUrl: 'https://cryptologos.cc/logos/usd-coin-usdc-logo.png',
   },

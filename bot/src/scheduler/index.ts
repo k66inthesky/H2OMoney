@@ -3,6 +3,7 @@
  */
 
 import cron from 'node-cron';
+import { positionService, suiClient } from '../services/index.js';
 
 // 定時任務配置
 interface ScheduledTask {
@@ -53,26 +54,39 @@ export function startScheduler() {
  * 執行待處理的 DCA 定投
  */
 async function executePendingDCAs() {
-  // TODO: 實作
-  // 1. 查詢所有到期的 DCA 倉位
-  // 2. 對每個倉位：
-  //    a. 從生息金庫提取所需金額
-  //    b. 通過 Cetus Aggregator 尋找最佳路徑
-  //    c. 執行 swap
-  //    d. 更新倉位狀態
-  //    e. 發送通知給用戶
-
   console.log('   Checking for pending DCA executions...');
 
-  // Mock: 模擬執行
-  const pendingPositions = await getPendingPositions();
+  const activePositions = positionService.getActivePositions();
+  const now = Date.now();
+  let executedCount = 0;
 
-  for (const position of pendingPositions) {
-    console.log(`   Executing DCA for position: ${position.id}`);
-    // await executeDCA(position);
+  for (const position of activePositions) {
+    // 檢查是否到執行時間
+    if (now >= position.nextExecutionTime) {
+      console.log(`   Position ${position.id} is ready for execution`);
+
+      try {
+        const success = await positionService.executeDCA(position.id);
+        if (success) {
+          executedCount++;
+          console.log(`   ✅ Successfully executed DCA for ${position.id}`);
+
+          // TODO: 發送通知給用戶（通過 Telegram）
+          // await notifyUser(position.owner, {
+          //   type: 'DCA_EXECUTED',
+          //   positionId: position.id,
+          //   period: position.executedPeriods,
+          // });
+        } else {
+          console.log(`   ❌ Failed to execute DCA for ${position.id}`);
+        }
+      } catch (error) {
+        console.error(`   Error executing DCA for ${position.id}:`, error);
+      }
+    }
   }
 
-  console.log(`   Processed ${pendingPositions.length} positions`);
+  console.log(`   Processed ${executedCount} of ${activePositions.length} positions`);
 }
 
 /**
