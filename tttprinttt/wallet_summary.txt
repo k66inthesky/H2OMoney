@@ -1,0 +1,47 @@
+=== H2O Smart DCA - 錢包餘額總覽 ===
+查詢時間: $(date)
+
+錢包列表：
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. CustomerA
+   地址: 0x04e7d9e575790c1d551588ff1dd4f57428da06db17767e33368a15ec5023f010
+   SUI:  1.00 SUI
+   USDC: 0 USDC
+   
+2. SuiAudit-Publisher  
+   地址: 0x285b0021863629b449109da710cee9969354a181a426781da74b510ea1d018d9
+   SUI:  0.04 SUI
+   USDC: 0 USDC
+   
+3. victim
+   地址: 0x4c9456629f285627eb7126193ee51402ed6aaf7b12c2c598833d0c8dc02edb3c
+   SUI:  0 SUI (需要補充 gas)
+   USDC: 10.00 USDC ✓
+   
+4. CustomerB
+   地址: 0x6cf27943ff30c52e9def620eb6747f52a50d53a29da71c4d96057bc4809572fd
+   SUI:  1.00 SUI
+   USDC: 0 USDC
+   
+5. Navi
+   地址: 0xd99ea94bfb74af971131ac34a90480114977f1d553d457d1cef38fe81c0194cb
+   SUI:  0.98 SUI
+   USDC: 10.00 USDC ✓
+   
+6. H2OMoney_wallet (部署錢包)
+   地址: 0xde3020192a90f75c6d95ba8676e27e1993c85235477d8138867a11423743a156
+   SUI:  1.50 SUI
+   USDC: 20.00 USDC ✓
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+總計:
+• 有 USDC 的錢包: 3 個 (victim, Navi, H2OMoney_wallet)
+• 總 USDC: 40.00 USDC
+• 總 SUI: ~4.52 SUI
+
+可用於測試的錢包:
+✓ Navi: 有足夠的 SUI 和 USDC
+✓ H2OMoney_wallet: 有足夠的 SUI 和 USDC
+⚠ victim: 有 USDC 但缺少 SUI (需要轉一些 SUI 過去)

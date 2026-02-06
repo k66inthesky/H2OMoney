@@ -1,0 +1,700 @@
+[warning] Client/Server api version mismatch, client api version : 1.64.1, server api version : 1.65.0
+[NOTE] Dependencies on Sui, MoveStdlib, Bridge, DeepBook, and SuiSystem are automatically added, but this feature is disabled for your package because you have explicitly included dependencies on Sui. Consider removing these dependencies from `Move.toml`.
+INCLUDING DEPENDENCY MoveStdlib
+INCLUDING DEPENDENCY Sui
+BUILDING h2o_smart_dca
+[0m[1m[38;5;11mwarning[W02021][0m[1m: duplicate alias[0m
+  [0m[34m┌─[0m ./sources/strategy.move:4:23
+  [0m[34m│[0m
+[0m[34m4[0m [0m[34m│[0m     use sui::object::{[0m[33mSelf[0m, UID};
+  [0m[34m│[0m                       [0m[33m^^^^[0m [0m[33mUnnecessary alias 'object' for module 'sui::object'. This alias is provided by default[0m
+  [0m[34m│[0m
+  [0m[34m=[0m This warning can be suppressed with '#[allow(duplicate_alias)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W09001][0m[1m: unused alias[0m
+  [0m[34m┌─[0m ./sources/strategy.move:4:23
+  [0m[34m│[0m
+[0m[34m4[0m [0m[34m│[0m     use sui::object::{[0m[33mSelf[0m, UID};
+  [0m[34m│[0m                       [0m[33m^^^^[0m [0m[33mUnused 'use' of alias 'object'. Consider removing it[0m
+  [0m[34m│[0m
+  [0m[34m=[0m This warning can be suppressed with '#[allow(unused_use)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W02021][0m[1m: duplicate alias[0m
+  [0m[34m┌─[0m ./sources/strategy.move:4:29
+  [0m[34m│[0m
+[0m[34m4[0m [0m[34m│[0m     use sui::object::{Self, [0m[33mUID[0m};
+  [0m[34m│[0m                             [0m[33m^^^[0m [0m[33mUnnecessary alias 'UID' for module member 'sui::object::UID'. This alias is provided by default[0m
+  [0m[34m│[0m
+  [0m[34m=[0m This warning can be suppressed with '#[allow(duplicate_alias)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W09001][0m[1m: unused alias[0m
+  [0m[34m┌─[0m ./sources/strategy.move:4:29
+  [0m[34m│[0m
+[0m[34m4[0m [0m[34m│[0m     use sui::object::{Self, [0m[33mUID[0m};
+  [0m[34m│[0m                             [0m[33m^^^[0m [0m[33mUnused 'use' of alias 'UID'. Consider removing it[0m
+  [0m[34m│[0m
+  [0m[34m=[0m This warning can be suppressed with '#[allow(unused_use)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W02021][0m[1m: duplicate alias[0m
+  [0m[34m┌─[0m ./sources/strategy.move:5:27
+  [0m[34m│[0m
+[0m[34m5[0m [0m[34m│[0m     use sui::tx_context::{[0m[33mSelf[0m, TxContext};
+  [0m[34m│[0m                           [0m[33m^^^^[0m [0m[33mUnnecessary alias 'tx_context' for module 'sui::tx_context'. This alias is provided by default[0m
+  [0m[34m│[0m
+  [0m[34m=[0m This warning can be suppressed with '#[allow(duplicate_alias)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W09001][0m[1m: unused alias[0m
+  [0m[34m┌─[0m ./sources/strategy.move:5:27
+  [0m[34m│[0m
+[0m[34m5[0m [0m[34m│[0m     use sui::tx_context::{[0m[33mSelf[0m, TxContext};
+  [0m[34m│[0m                           [0m[33m^^^^[0m [0m[33mUnused 'use' of alias 'tx_context'. Consider removing it[0m
+  [0m[34m│[0m
+  [0m[34m=[0m This warning can be suppressed with '#[allow(unused_use)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W02021][0m[1m: duplicate alias[0m
+  [0m[34m┌─[0m ./sources/strategy.move:5:33
+  [0m[34m│[0m
+[0m[34m5[0m [0m[34m│[0m     use sui::tx_context::{Self, [0m[33mTxContext[0m};
+  [0m[34m│[0m                                 [0m[33m^^^^^^^^^[0m [0m[33mUnnecessary alias 'TxContext' for module member 'sui::tx_context::TxContext'. This alias is provided by default[0m
+  [0m[34m│[0m
+  [0m[34m=[0m This warning can be suppressed with '#[allow(duplicate_alias)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W09011][0m[1m: unused constant[0m
+  [0m[34m┌─[0m ./sources/strategy.move:9:11
+  [0m[34m│[0m
+[0m[34m9[0m [0m[34m│[0m     const [0m[33mE_INVALID_STRATEGY[0m: u64 = 1;
+  [0m[34m│[0m           [0m[33m^^^^^^^^^^^^^^^^^^[0m [0m[33mThe constant 'E_INVALID_STRATEGY' is never used. Consider removing it.[0m
+  [0m[34m│[0m
+  [0m[34m=[0m This warning can be suppressed with '#[allow(unused_const)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W09011][0m[1m: unused constant[0m
+   [0m[34m┌─[0m ./sources/strategy.move:10:11
+   [0m[34m│[0m
+[0m[34m10[0m [0m[34m│[0m     const [0m[33mE_PRICE_TOO_HIGH[0m: u64 = 2;
+   [0m[34m│[0m           [0m[33m^^^^^^^^^^^^^^^^[0m [0m[33mThe constant 'E_PRICE_TOO_HIGH' is never used. Consider removing it.[0m
+   [0m[34m│[0m
+   [0m[34m=[0m This warning can be suppressed with '#[allow(unused_const)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W09011][0m[1m: unused constant[0m
+   [0m[34m┌─[0m ./sources/strategy.move:12:11
+   [0m[34m│[0m
+[0m[34m12[0m [0m[34m│[0m     const [0m[33mE_TARGET_NOT_REACHED[0m: u64 = 4;
+   [0m[34m│[0m           [0m[33m^^^^^^^^^^^^^^^^^^^^[0m [0m[33mThe constant 'E_TARGET_NOT_REACHED' is never used. Consider removing it.[0m
+   [0m[34m│[0m
+   [0m[34m=[0m This warning can be suppressed with '#[allow(unused_const)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W09011][0m[1m: unused constant[0m
+   [0m[34m┌─[0m ./sources/strategy.move:20:11
+   [0m[34m│[0m
+[0m[34m20[0m [0m[34m│[0m     const [0m[33mBASIS_POINTS[0m: u64 = 10000;
+   [0m[34m│[0m           [0m[33m^^^^^^^^^^^^[0m [0m[33mThe constant 'BASIS_POINTS' is never used. Consider removing it.[0m
+   [0m[34m│[0m
+   [0m[34m=[0m This warning can be suppressed with '#[allow(unused_const)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W04037][0m[1m: deprecated usage[0m
+    [0m[34m┌─[0m ./sources/strategy.move:195:29
+    [0m[34m│[0m
+[0m[34m195[0m [0m[34m│[0m         let size = vec_map::[0m[33msize[0m(&allocations);
+    [0m[34m│[0m                             [0m[33m^^^^[0m [0m[33mThe function 'sui::vec_map::size' is deprecated: Renamed to `length` for consistency.[0m
+    [0m[34m│[0m
+    [0m[34m=[0m This warning can be suppressed with '#[allow(deprecated_usage)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W04037][0m[1m: deprecated usage[0m
+    [0m[34m┌─[0m ./sources/strategy.move:217:29
+    [0m[34m│[0m
+[0m[34m217[0m [0m[34m│[0m         let size = vec_map::[0m[33msize[0m(&strategy.allocations);
+    [0m[34m│[0m                             [0m[33m^^^^[0m [0m[33mThe function 'sui::vec_map::size' is deprecated: Renamed to `length` for consistency.[0m
+    [0m[34m│[0m
+    [0m[34m=[0m This warning can be suppressed with '#[allow(deprecated_usage)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W09011][0m[1m: unused constant[0m
+  [0m[34m┌─[0m ./sources/h2o_usd.move:9:11
+  [0m[34m│[0m
+[0m[34m9[0m [0m[34m│[0m     const [0m[33mE_NOT_AUTHORIZED[0m: u64 = 1;
+  [0m[34m│[0m           [0m[33m^^^^^^^^^^^^^^^^[0m [0m[33mThe constant 'E_NOT_AUTHORIZED' is never used. Consider removing it.[0m
+  [0m[34m│[0m
+  [0m[34m=[0m This warning can be suppressed with '#[allow(unused_const)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W04037][0m[1m: deprecated usage[0m
+   [0m[34m┌─[0m ./sources/h2o_usd.move:22:46
+   [0m[34m│[0m
+[0m[34m22[0m [0m[34m│[0m         let (treasury_cap, metadata) = coin::[0m[33mcreate_currency[0m(
+   [0m[34m│[0m                                              [0m[33m^^^^^^^^^^^^^^^[0m [0m[33mThe function 'sui::coin::create_currency' is deprecated: Use `coin_registry::new_currency_with_otw` instead[0m
+   [0m[34m│[0m
+   [0m[34m=[0m This warning can be suppressed with '#[allow(deprecated_usage)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W09002][0m[1m: unused variable[0m
+   [0m[34m┌─[0m ./sources/h2o_usd.move:46:9
+   [0m[34m│[0m
+[0m[34m46[0m [0m[34m│[0m         [0m[33mrecipient[0m: address,
+   [0m[34m│[0m         [0m[33m^^^^^^^^^[0m [0m[33mUnused parameter 'recipient'. Consider removing or prefixing with an underscore: '_recipient'[0m
+   [0m[34m│[0m
+   [0m[34m=[0m This warning can be suppressed with '#[allow(unused_variable)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W02021][0m[1m: duplicate alias[0m
+  [0m[34m┌─[0m ./sources/dca_position.move:4:23
+  [0m[34m│[0m
+[0m[34m4[0m [0m[34m│[0m     use sui::object::{[0m[33mSelf[0m, UID, ID};
+  [0m[34m│[0m                       [0m[33m^^^^[0m [0m[33mUnnecessary alias 'object' for module 'sui::object'. This alias is provided by default[0m
+  [0m[34m│[0m
+  [0m[34m=[0m This warning can be suppressed with '#[allow(duplicate_alias)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W02021][0m[1m: duplicate alias[0m
+  [0m[34m┌─[0m ./sources/dca_position.move:4:29
+  [0m[34m│[0m
+[0m[34m4[0m [0m[34m│[0m     use sui::object::{Self, [0m[33mUID[0m, ID};
+  [0m[34m│[0m                             [0m[33m^^^[0m [0m[33mUnnecessary alias 'UID' for module member 'sui::object::UID'. This alias is provided by default[0m
+  [0m[34m│[0m
+  [0m[34m=[0m This warning can be suppressed with '#[allow(duplicate_alias)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W02021][0m[1m: duplicate alias[0m
+  [0m[34m┌─[0m ./sources/dca_position.move:4:34
+  [0m[34m│[0m
+[0m[34m4[0m [0m[34m│[0m     use sui::object::{Self, UID, [0m[33mID[0m};
+  [0m[34m│[0m                                  [0m[33m^^[0m [0m[33mUnnecessary alias 'ID' for module member 'sui::object::ID'. This alias is provided by default[0m
+  [0m[34m│[0m
+  [0m[34m=[0m This warning can be suppressed with '#[allow(duplicate_alias)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W02021][0m[1m: duplicate alias[0m
+  [0m[34m┌─[0m ./sources/dca_position.move:5:14
+  [0m[34m│[0m
+[0m[34m5[0m [0m[34m│[0m     use sui::[0m[33mtransfer[0m;
+  [0m[34m│[0m              [0m[33m^^^^^^^^[0m [0m[33mUnnecessary alias 'transfer' for module 'sui::transfer'. This alias is provided by default[0m
+  [0m[34m│[0m
+  [0m[34m=[0m This warning can be suppressed with '#[allow(duplicate_alias)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W09001][0m[1m: unused alias[0m
+  [0m[34m┌─[0m ./sources/dca_position.move:5:14
+  [0m[34m│[0m
+[0m[34m5[0m [0m[34m│[0m     use sui::[0m[33mtransfer[0m;
+  [0m[34m│[0m              [0m[33m^^^^^^^^[0m [0m[33mUnused 'use' of alias 'transfer'. Consider removing it[0m
+  [0m[34m│[0m
+  [0m[34m=[0m This warning can be suppressed with '#[allow(unused_use)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W02021][0m[1m: duplicate alias[0m
+  [0m[34m┌─[0m ./sources/dca_position.move:6:27
+  [0m[34m│[0m
+[0m[34m6[0m [0m[34m│[0m     use sui::tx_context::{[0m[33mSelf[0m, TxContext};
+  [0m[34m│[0m                           [0m[33m^^^^[0m [0m[33mUnnecessary alias 'tx_context' for module 'sui::tx_context'. This alias is provided by default[0m
+  [0m[34m│[0m
+  [0m[34m=[0m This warning can be suppressed with '#[allow(duplicate_alias)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W02021][0m[1m: duplicate alias[0m
+  [0m[34m┌─[0m ./sources/dca_position.move:6:33
+  [0m[34m│[0m
+[0m[34m6[0m [0m[34m│[0m     use sui::tx_context::{Self, [0m[33mTxContext[0m};
+  [0m[34m│[0m                                 [0m[33m^^^^^^^^^[0m [0m[33mUnnecessary alias 'TxContext' for module member 'sui::tx_context::TxContext'. This alias is provided by default[0m
+  [0m[34m│[0m
+  [0m[34m=[0m This warning can be suppressed with '#[allow(duplicate_alias)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W09011][0m[1m: unused constant[0m
+   [0m[34m┌─[0m ./sources/dca_position.move:14:11
+   [0m[34m│[0m
+[0m[34m14[0m [0m[34m│[0m     const [0m[33mE_POSITION_ALREADY_PAUSED[0m: u64 = 3;
+   [0m[34m│[0m           [0m[33m^^^^^^^^^^^^^^^^^^^^^^^^^[0m [0m[33mThe constant 'E_POSITION_ALREADY_PAUSED' is never used. Consider removing it.[0m
+   [0m[34m│[0m
+   [0m[34m=[0m This warning can be suppressed with '#[allow(unused_const)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W09011][0m[1m: unused constant[0m
+   [0m[34m┌─[0m ./sources/dca_position.move:27:11
+   [0m[34m│[0m
+[0m[34m27[0m [0m[34m│[0m     const [0m[33mSTRATEGY_FIXED[0m: u8 = 0;
+   [0m[34m│[0m           [0m[33m^^^^^^^^^^^^^^[0m [0m[33mThe constant 'STRATEGY_FIXED' is never used. Consider removing it.[0m
+   [0m[34m│[0m
+   [0m[34m=[0m This warning can be suppressed with '#[allow(unused_const)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W09011][0m[1m: unused constant[0m
+   [0m[34m┌─[0m ./sources/dca_position.move:28:11
+   [0m[34m│[0m
+[0m[34m28[0m [0m[34m│[0m     const [0m[33mSTRATEGY_LIMIT[0m: u8 = 1;
+   [0m[34m│[0m           [0m[33m^^^^^^^^^^^^^^[0m [0m[33mThe constant 'STRATEGY_LIMIT' is never used. Consider removing it.[0m
+   [0m[34m│[0m
+   [0m[34m=[0m This warning can be suppressed with '#[allow(unused_const)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W09011][0m[1m: unused constant[0m
+   [0m[34m┌─[0m ./sources/dca_position.move:29:11
+   [0m[34m│[0m
+[0m[34m29[0m [0m[34m│[0m     const [0m[33mSTRATEGY_VALUE_AVG[0m: u8 = 2;
+   [0m[34m│[0m           [0m[33m^^^^^^^^^^^^^^^^^^[0m [0m[33mThe constant 'STRATEGY_VALUE_AVG' is never used. Consider removing it.[0m
+   [0m[34m│[0m
+   [0m[34m=[0m This warning can be suppressed with '#[allow(unused_const)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W02021][0m[1m: duplicate alias[0m
+  [0m[34m┌─[0m ./sources/keeper.move:4:23
+  [0m[34m│[0m
+[0m[34m4[0m [0m[34m│[0m     use sui::object::{[0m[33mSelf[0m, UID, ID};
+  [0m[34m│[0m                       [0m[33m^^^^[0m [0m[33mUnnecessary alias 'object' for module 'sui::object'. This alias is provided by default[0m
+  [0m[34m│[0m
+  [0m[34m=[0m This warning can be suppressed with '#[allow(duplicate_alias)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W02021][0m[1m: duplicate alias[0m
+  [0m[34m┌─[0m ./sources/keeper.move:4:29
+  [0m[34m│[0m
+[0m[34m4[0m [0m[34m│[0m     use sui::object::{Self, [0m[33mUID[0m, ID};
+  [0m[34m│[0m                             [0m[33m^^^[0m [0m[33mUnnecessary alias 'UID' for module member 'sui::object::UID'. This alias is provided by default[0m
+  [0m[34m│[0m
+  [0m[34m=[0m This warning can be suppressed with '#[allow(duplicate_alias)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W02021][0m[1m: duplicate alias[0m
+  [0m[34m┌─[0m ./sources/keeper.move:4:34
+  [0m[34m│[0m
+[0m[34m4[0m [0m[34m│[0m     use sui::object::{Self, UID, [0m[33mID[0m};
+  [0m[34m│[0m                                  [0m[33m^^[0m [0m[33mUnnecessary alias 'ID' for module member 'sui::object::ID'. This alias is provided by default[0m
+  [0m[34m│[0m
+  [0m[34m=[0m This warning can be suppressed with '#[allow(duplicate_alias)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W02021][0m[1m: duplicate alias[0m
+  [0m[34m┌─[0m ./sources/keeper.move:5:14
+  [0m[34m│[0m
+[0m[34m5[0m [0m[34m│[0m     use sui::[0m[33mtransfer[0m;
+  [0m[34m│[0m              [0m[33m^^^^^^^^[0m [0m[33mUnnecessary alias 'transfer' for module 'sui::transfer'. This alias is provided by default[0m
+  [0m[34m│[0m
+  [0m[34m=[0m This warning can be suppressed with '#[allow(duplicate_alias)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W02021][0m[1m: duplicate alias[0m
+  [0m[34m┌─[0m ./sources/keeper.move:6:27
+  [0m[34m│[0m
+[0m[34m6[0m [0m[34m│[0m     use sui::tx_context::{[0m[33mSelf[0m, TxContext};
+  [0m[34m│[0m                           [0m[33m^^^^[0m [0m[33mUnnecessary alias 'tx_context' for module 'sui::tx_context'. This alias is provided by default[0m
+  [0m[34m│[0m
+  [0m[34m=[0m This warning can be suppressed with '#[allow(duplicate_alias)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W02021][0m[1m: duplicate alias[0m
+  [0m[34m┌─[0m ./sources/keeper.move:6:33
+  [0m[34m│[0m
+[0m[34m6[0m [0m[34m│[0m     use sui::tx_context::{Self, [0m[33mTxContext[0m};
+  [0m[34m│[0m                                 [0m[33m^^^^^^^^^[0m [0m[33mUnnecessary alias 'TxContext' for module member 'sui::tx_context::TxContext'. This alias is provided by default[0m
+  [0m[34m│[0m
+  [0m[34m=[0m This warning can be suppressed with '#[allow(duplicate_alias)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W09011][0m[1m: unused constant[0m
+   [0m[34m┌─[0m ./sources/keeper.move:14:11
+   [0m[34m│[0m
+[0m[34m14[0m [0m[34m│[0m     const [0m[33mE_TASK_NOT_FOUND[0m: u64 = 2;
+   [0m[34m│[0m           [0m[33m^^^^^^^^^^^^^^^^[0m [0m[33mThe constant 'E_TASK_NOT_FOUND' is never used. Consider removing it.[0m
+   [0m[34m│[0m
+   [0m[34m=[0m This warning can be suppressed with '#[allow(unused_const)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W09011][0m[1m: unused constant[0m
+   [0m[34m┌─[0m ./sources/keeper.move:21:11
+   [0m[34m│[0m
+[0m[34m21[0m [0m[34m│[0m     const [0m[33mTASK_TYPE_DCA[0m: u8 = 0;
+   [0m[34m│[0m           [0m[33m^^^^^^^^^^^^^[0m [0m[33mThe constant 'TASK_TYPE_DCA' is never used. Consider removing it.[0m
+   [0m[34m│[0m
+   [0m[34m=[0m This warning can be suppressed with '#[allow(unused_const)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W09011][0m[1m: unused constant[0m
+   [0m[34m┌─[0m ./sources/keeper.move:22:11
+   [0m[34m│[0m
+[0m[34m22[0m [0m[34m│[0m     const [0m[33mTASK_TYPE_REBALANCE[0m: u8 = 1;
+   [0m[34m│[0m           [0m[33m^^^^^^^^^^^^^^^^^^^[0m [0m[33mThe constant 'TASK_TYPE_REBALANCE' is never used. Consider removing it.[0m
+   [0m[34m│[0m
+   [0m[34m=[0m This warning can be suppressed with '#[allow(unused_const)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W09011][0m[1m: unused constant[0m
+   [0m[34m┌─[0m ./sources/keeper.move:23:11
+   [0m[34m│[0m
+[0m[34m23[0m [0m[34m│[0m     const [0m[33mTASK_TYPE_YIELD_HARVEST[0m: u8 = 2;
+   [0m[34m│[0m           [0m[33m^^^^^^^^^^^^^^^^^^^^^^^[0m [0m[33mThe constant 'TASK_TYPE_YIELD_HARVEST' is never used. Consider removing it.[0m
+   [0m[34m│[0m
+   [0m[34m=[0m This warning can be suppressed with '#[allow(unused_const)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W09011][0m[1m: unused constant[0m
+   [0m[34m┌─[0m ./sources/keeper.move:30:11
+   [0m[34m│[0m
+[0m[34m30[0m [0m[34m│[0m     const [0m[33mBASIS_POINTS[0m: u64 = 10000;
+   [0m[34m│[0m           [0m[33m^^^^^^^^^^^^[0m [0m[33mThe constant 'BASIS_POINTS' is never used. Consider removing it.[0m
+   [0m[34m│[0m
+   [0m[34m=[0m This warning can be suppressed with '#[allow(unused_const)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W09002][0m[1m: unused variable[0m
+    [0m[34m┌─[0m ./sources/keeper.move:185:9
+    [0m[34m│[0m
+[0m[34m185[0m [0m[34m│[0m         [0m[33mregistry[0m: &KeeperRegistry,
+    [0m[34m│[0m         [0m[33m^^^^^^^^[0m [0m[33mUnused parameter 'registry'. Consider removing or prefixing with an underscore: '_registry'[0m
+    [0m[34m│[0m
+    [0m[34m=[0m This warning can be suppressed with '#[allow(unused_variable)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W04037][0m[1m: deprecated usage[0m
+    [0m[34m┌─[0m ./sources/keeper.move:373:18
+    [0m[34m│[0m
+[0m[34m373[0m [0m[34m│[0m         vec_set::[0m[33msize[0m(&registry.keepers)
+    [0m[34m│[0m                  [0m[33m^^^^[0m [0m[33mThe function 'sui::vec_set::size' is deprecated: Renamed to `length` for consistency.[0m
+    [0m[34m│[0m
+    [0m[34m=[0m This warning can be suppressed with '#[allow(deprecated_usage)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W09011][0m[1m: unused constant[0m
+   [0m[34m┌─[0m ./sources/h2o_vault_v3_secure.move:17:11
+   [0m[34m│[0m
+[0m[34m17[0m [0m[34m│[0m     const [0m[33mE_INSUFFICIENT_H2OUSD[0m: u64 = 6;
+   [0m[34m│[0m           [0m[33m^^^^^^^^^^^^^^^^^^^^^[0m [0m[33mThe constant 'E_INSUFFICIENT_H2OUSD' is never used. Consider removing it.[0m
+   [0m[34m│[0m
+   [0m[34m=[0m This warning can be suppressed with '#[allow(unused_const)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W09011][0m[1m: unused constant[0m
+   [0m[34m┌─[0m ./sources/h2o_vault_v3_secure.move:21:11
+   [0m[34m│[0m
+[0m[34m21[0m [0m[34m│[0m     const [0m[33mE_EARLY_WITHDRAWAL_FEE[0m: u64 = 10;
+   [0m[34m│[0m           [0m[33m^^^^^^^^^^^^^^^^^^^^^^[0m [0m[33mThe constant 'E_EARLY_WITHDRAWAL_FEE' is never used. Consider removing it.[0m
+   [0m[34m│[0m
+   [0m[34m=[0m This warning can be suppressed with '#[allow(unused_const)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W09011][0m[1m: unused constant[0m
+   [0m[34m┌─[0m ./sources/h2o_vault_v3_secure.move:32:11
+   [0m[34m│[0m
+[0m[34m32[0m [0m[34m│[0m     const [0m[33mDEFAULT_LOCK_PERIOD_MS[0m: u64 = 86400000; // 24 小時預設鎖定期
+   [0m[34m│[0m           [0m[33m^^^^^^^^^^^^^^^^^^^^^^[0m [0m[33mThe constant 'DEFAULT_LOCK_PERIOD_MS' is never used. Consider removing it.[0m
+   [0m[34m│[0m
+   [0m[34m=[0m This warning can be suppressed with '#[allow(unused_const)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W09002][0m[1m: unused variable[0m
+    [0m[34m┌─[0m ./sources/h2o_vault_v3_secure.move:606:9
+    [0m[34m│[0m
+[0m[34m606[0m [0m[34m│[0m         [0m[33mvault[0m: &SecureVaultConfig<T>,
+    [0m[34m│[0m         [0m[33m^^^^^[0m [0m[33mUnused parameter 'vault'. Consider removing or prefixing with an underscore: '_vault'[0m
+    [0m[34m│[0m
+    [0m[34m=[0m This warning can be suppressed with '#[allow(unused_variable)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W02021][0m[1m: duplicate alias[0m
+  [0m[34m┌─[0m ./sources/h2o_vault.move:4:23
+  [0m[34m│[0m
+[0m[34m4[0m [0m[34m│[0m     use sui::object::{[0m[33mSelf[0m, UID, ID};
+  [0m[34m│[0m                       [0m[33m^^^^[0m [0m[33mUnnecessary alias 'object' for module 'sui::object'. This alias is provided by default[0m
+  [0m[34m│[0m
+  [0m[34m=[0m This warning can be suppressed with '#[allow(duplicate_alias)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W02021][0m[1m: duplicate alias[0m
+  [0m[34m┌─[0m ./sources/h2o_vault.move:4:29
+  [0m[34m│[0m
+[0m[34m4[0m [0m[34m│[0m     use sui::object::{Self, [0m[33mUID[0m, ID};
+  [0m[34m│[0m                             [0m[33m^^^[0m [0m[33mUnnecessary alias 'UID' for module member 'sui::object::UID'. This alias is provided by default[0m
+  [0m[34m│[0m
+  [0m[34m=[0m This warning can be suppressed with '#[allow(duplicate_alias)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W02021][0m[1m: duplicate alias[0m
+  [0m[34m┌─[0m ./sources/h2o_vault.move:4:34
+  [0m[34m│[0m
+[0m[34m4[0m [0m[34m│[0m     use sui::object::{Self, UID, [0m[33mID[0m};
+  [0m[34m│[0m                                  [0m[33m^^[0m [0m[33mUnnecessary alias 'ID' for module member 'sui::object::ID'. This alias is provided by default[0m
+  [0m[34m│[0m
+  [0m[34m=[0m This warning can be suppressed with '#[allow(duplicate_alias)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W02021][0m[1m: duplicate alias[0m
+  [0m[34m┌─[0m ./sources/h2o_vault.move:5:14
+  [0m[34m│[0m
+[0m[34m5[0m [0m[34m│[0m     use sui::[0m[33mtransfer[0m;
+  [0m[34m│[0m              [0m[33m^^^^^^^^[0m [0m[33mUnnecessary alias 'transfer' for module 'sui::transfer'. This alias is provided by default[0m
+  [0m[34m│[0m
+  [0m[34m=[0m This warning can be suppressed with '#[allow(duplicate_alias)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W02021][0m[1m: duplicate alias[0m
+  [0m[34m┌─[0m ./sources/h2o_vault.move:6:27
+  [0m[34m│[0m
+[0m[34m6[0m [0m[34m│[0m     use sui::tx_context::{[0m[33mSelf[0m, TxContext};
+  [0m[34m│[0m                           [0m[33m^^^^[0m [0m[33mUnnecessary alias 'tx_context' for module 'sui::tx_context'. This alias is provided by default[0m
+  [0m[34m│[0m
+  [0m[34m=[0m This warning can be suppressed with '#[allow(duplicate_alias)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W02021][0m[1m: duplicate alias[0m
+  [0m[34m┌─[0m ./sources/h2o_vault.move:6:33
+  [0m[34m│[0m
+[0m[34m6[0m [0m[34m│[0m     use sui::tx_context::{Self, [0m[33mTxContext[0m};
+  [0m[34m│[0m                                 [0m[33m^^^^^^^^^[0m [0m[33mUnnecessary alias 'TxContext' for module member 'sui::tx_context::TxContext'. This alias is provided by default[0m
+  [0m[34m│[0m
+  [0m[34m=[0m This warning can be suppressed with '#[allow(duplicate_alias)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W09001][0m[1m: unused alias[0m
+   [0m[34m┌─[0m ./sources/h2o_vault.move:11:22
+   [0m[34m│[0m
+[0m[34m11[0m [0m[34m│[0m     use sui::table::{[0m[33mSelf[0m, Table};
+   [0m[34m│[0m                      [0m[33m^^^^[0m [0m[33mUnused 'use' of alias 'table'. Consider removing it[0m
+   [0m[34m│[0m
+   [0m[34m=[0m This warning can be suppressed with '#[allow(unused_use)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W09001][0m[1m: unused alias[0m
+   [0m[34m┌─[0m ./sources/h2o_vault.move:11:28
+   [0m[34m│[0m
+[0m[34m11[0m [0m[34m│[0m     use sui::table::{Self, [0m[33mTable[0m};
+   [0m[34m│[0m                            [0m[33m^^^^^[0m [0m[33mUnused 'use' of alias 'Table'. Consider removing it[0m
+   [0m[34m│[0m
+   [0m[34m=[0m This warning can be suppressed with '#[allow(unused_use)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W09011][0m[1m: unused constant[0m
+   [0m[34m┌─[0m ./sources/h2o_vault.move:17:11
+   [0m[34m│[0m
+[0m[34m17[0m [0m[34m│[0m     const [0m[33mE_VAULT_PAUSED[0m: u64 = 4;
+   [0m[34m│[0m           [0m[33m^^^^^^^^^^^^^^[0m [0m[33mThe constant 'E_VAULT_PAUSED' is never used. Consider removing it.[0m
+   [0m[34m│[0m
+   [0m[34m=[0m This warning can be suppressed with '#[allow(unused_const)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W09011][0m[1m: unused constant[0m
+   [0m[34m┌─[0m ./sources/h2o_vault.move:20:11
+   [0m[34m│[0m
+[0m[34m20[0m [0m[34m│[0m     const [0m[33mBASIS_POINTS[0m: u64 = 10000;
+   [0m[34m│[0m           [0m[33m^^^^^^^^^^^^[0m [0m[33mThe constant 'BASIS_POINTS' is never used. Consider removing it.[0m
+   [0m[34m│[0m
+   [0m[34m=[0m This warning can be suppressed with '#[allow(unused_const)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W02021][0m[1m: duplicate alias[0m
+  [0m[34m┌─[0m ./sources/yield_optimizer.move:4:23
+  [0m[34m│[0m
+[0m[34m4[0m [0m[34m│[0m     use sui::object::{[0m[33mSelf[0m, UID, ID};
+  [0m[34m│[0m                       [0m[33m^^^^[0m [0m[33mUnnecessary alias 'object' for module 'sui::object'. This alias is provided by default[0m
+  [0m[34m│[0m
+  [0m[34m=[0m This warning can be suppressed with '#[allow(duplicate_alias)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W02021][0m[1m: duplicate alias[0m
+  [0m[34m┌─[0m ./sources/yield_optimizer.move:4:29
+  [0m[34m│[0m
+[0m[34m4[0m [0m[34m│[0m     use sui::object::{Self, [0m[33mUID[0m, ID};
+  [0m[34m│[0m                             [0m[33m^^^[0m [0m[33mUnnecessary alias 'UID' for module member 'sui::object::UID'. This alias is provided by default[0m
+  [0m[34m│[0m
+  [0m[34m=[0m This warning can be suppressed with '#[allow(duplicate_alias)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W02021][0m[1m: duplicate alias[0m
+  [0m[34m┌─[0m ./sources/yield_optimizer.move:4:34
+  [0m[34m│[0m
+[0m[34m4[0m [0m[34m│[0m     use sui::object::{Self, UID, [0m[33mID[0m};
+  [0m[34m│[0m                                  [0m[33m^^[0m [0m[33mUnnecessary alias 'ID' for module member 'sui::object::ID'. This alias is provided by default[0m
+  [0m[34m│[0m
+  [0m[34m=[0m This warning can be suppressed with '#[allow(duplicate_alias)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W02021][0m[1m: duplicate alias[0m
+  [0m[34m┌─[0m ./sources/yield_optimizer.move:5:14
+  [0m[34m│[0m
+[0m[34m5[0m [0m[34m│[0m     use sui::[0m[33mtransfer[0m;
+  [0m[34m│[0m              [0m[33m^^^^^^^^[0m [0m[33mUnnecessary alias 'transfer' for module 'sui::transfer'. This alias is provided by default[0m
+  [0m[34m│[0m
+  [0m[34m=[0m This warning can be suppressed with '#[allow(duplicate_alias)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W02021][0m[1m: duplicate alias[0m
+  [0m[34m┌─[0m ./sources/yield_optimizer.move:6:27
+  [0m[34m│[0m
+[0m[34m6[0m [0m[34m│[0m     use sui::tx_context::{[0m[33mSelf[0m, TxContext};
+  [0m[34m│[0m                           [0m[33m^^^^[0m [0m[33mUnnecessary alias 'tx_context' for module 'sui::tx_context'. This alias is provided by default[0m
+  [0m[34m│[0m
+  [0m[34m=[0m This warning can be suppressed with '#[allow(duplicate_alias)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W02021][0m[1m: duplicate alias[0m
+  [0m[34m┌─[0m ./sources/yield_optimizer.move:6:33
+  [0m[34m│[0m
+[0m[34m6[0m [0m[34m│[0m     use sui::tx_context::{Self, [0m[33mTxContext[0m};
+  [0m[34m│[0m                                 [0m[33m^^^^^^^^^[0m [0m[33mUnnecessary alias 'TxContext' for module member 'sui::tx_context::TxContext'. This alias is provided by default[0m
+  [0m[34m│[0m
+  [0m[34m=[0m This warning can be suppressed with '#[allow(duplicate_alias)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W09011][0m[1m: unused constant[0m
+   [0m[34m┌─[0m ./sources/yield_optimizer.move:15:11
+   [0m[34m│[0m
+[0m[34m15[0m [0m[34m│[0m     const [0m[33mE_POSITION_NOT_FOUND[0m: u64 = 5;
+   [0m[34m│[0m           [0m[33m^^^^^^^^^^^^^^^^^^^^[0m [0m[33mThe constant 'E_POSITION_NOT_FOUND' is never used. Consider removing it.[0m
+   [0m[34m│[0m
+   [0m[34m=[0m This warning can be suppressed with '#[allow(unused_const)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+[0m[1m[38;5;11mwarning[W09011][0m[1m: unused constant[0m
+   [0m[34m┌─[0m ./sources/h2o_vault_v2.move:18:11
+   [0m[34m│[0m
+[0m[34m18[0m [0m[34m│[0m     const [0m[33mE_INSUFFICIENT_H2OUSD[0m: u64 = 6;
+   [0m[34m│[0m           [0m[33m^^^^^^^^^^^^^^^^^^^^^[0m [0m[33mThe constant 'E_INSUFFICIENT_H2OUSD' is never used. Consider removing it.[0m
+   [0m[34m│[0m
+   [0m[34m=[0m This warning can be suppressed with '#[allow(unused_const)]' applied to the 'module' or module member ('const', 'fun', or 'struct')
+
+Transaction Digest: 2PLF1osMpzJ5Mw4EaaGEfynk16sbPJk3cvz4ibhcXWAP
+╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Transaction Data                                                                                             │
+├──────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Sender: 0xde3020192a90f75c6d95ba8676e27e1993c85235477d8138867a11423743a156                                   │
+│ Gas Owner: 0xde3020192a90f75c6d95ba8676e27e1993c85235477d8138867a11423743a156                                │
+│ Gas Budget: 500000000 MIST                                                                                   │
+│ Gas Price: 1000 MIST                                                                                         │
+│ Gas Payment:                                                                                                 │
+│  ┌──                                                                                                         │
+│  │ ID: 0x182e515e0281c67629fffb0529569e7d831bb38fc7f6a55ea958ec63cac787d6                                    │
+│  │ Version: 698398602                                                                                        │
+│  │ Digest: 67TPBnXs5PK2kkshC6HoZpqrcVcfufqhbwn1QbFk6gym                                                      │
+│  └──                                                                                                         │
+│                                                                                                              │
+│ Transaction Kind: Programmable                                                                               │
+│ ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────╮ │
+│ │ Input Objects                                                                                            │ │
+│ ├──────────────────────────────────────────────────────────────────────────────────────────────────────────┤ │
+│ │ 0   Pure Arg: Type: address, Value: "0xde3020192a90f75c6d95ba8676e27e1993c85235477d8138867a11423743a156" │ │
+│ ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────╯ │
+│ ╭─────────────────────────────────────────────────────────────────────────╮                                  │
+│ │ Commands                                                                │                                  │
+│ ├─────────────────────────────────────────────────────────────────────────┤                                  │
+│ │ 0  Publish:                                                             │                                  │
+│ │  ┌                                                                      │                                  │
+│ │  │ Dependencies:                                                        │                                  │
+│ │  │   0x0000000000000000000000000000000000000000000000000000000000000001 │                                  │
+│ │  │   0x0000000000000000000000000000000000000000000000000000000000000002 │                                  │
+│ │  └                                                                      │                                  │
+│ │                                                                         │                                  │
+│ │ 1  TransferObjects:                                                     │                                  │
+│ │  ┌                                                                      │                                  │
+│ │  │ Arguments:                                                           │                                  │
+│ │  │   Result 0                                                           │                                  │
+│ │  │ Address: Input  0                                                    │                                  │
+│ │  └                                                                      │                                  │
+│ ╰─────────────────────────────────────────────────────────────────────────╯                                  │
+│                                                                                                              │
+│ Signatures:                                                                                                  │
+│    0DTITV2adNawvYVnXQbmD1McZrF6/V8KHpQbGCCsi9UFCzgahdDIq/TVg3ns0xO2aynbEd75Tjm01X4rtL9rBA==                  │
+│                                                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Transaction Effects                                                                               │
+├───────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Digest: 2PLF1osMpzJ5Mw4EaaGEfynk16sbPJk3cvz4ibhcXWAP                                              │
+│ Status: Success                                                                                   │
+│ Executed Epoch: 1002                                                                              │
+│                                                                                                   │
+│ Created Objects:                                                                                  │
+│  ┌──                                                                                              │
+│  │ ID: 0x0c68b292bcacb0a48494da215413ac9cbb6d417c735ac24a1126ee003b0b3aee                         │
+│  │ Owner: Account Address ( 0xde3020192a90f75c6d95ba8676e27e1993c85235477d8138867a11423743a156 )  │
+│  │ Version: 698398603                                                                             │
+│  │ Digest: 5mikCoiKnhCV9gxdSoabdw69k53FKahiU2tBvpxfH6f9                                           │
+│  └──                                                                                              │
+│  ┌──                                                                                              │
+│  │ ID: 0x1823aa8a2c15773de65c06ccb5e801be4edb8e4266513dd680865f6ff5220f2c                         │
+│  │ Owner: Immutable                                                                               │
+│  │ Version: 1                                                                                     │
+│  │ Digest: i3eDRR5YVUfi3YQLUtv4mKTSWReyRVhLLM7XB9igTMN                                            │
+│  └──                                                                                              │
+│  ┌──                                                                                              │
+│  │ ID: 0x1a38f77f1d6f2de33e72034b398a9d4734ece6eb3d30dff04b33c40aeb9a4e9e                         │
+│  │ Owner: Account Address ( 0xde3020192a90f75c6d95ba8676e27e1993c85235477d8138867a11423743a156 )  │
+│  │ Version: 698398603                                                                             │
+│  │ Digest: 29nfYBhq2E1d5zuoH2QPsH6YoLZ1BP8nnjZnT52zDDq6                                           │
+│  └──                                                                                              │
+│  ┌──                                                                                              │
+│  │ ID: 0x973498d044fe6f39bba37771b745236b33034de60635d1528ccbc54c35dc0dc3                         │
+│  │ Owner: Shared( 698398603 )                                                                     │
+│  │ Version: 698398603                                                                             │
+│  │ Digest: FFYTTYEP6ELBvTzRAuGgMnaW7hk7t6HTPSn4QH6soEws                                           │
+│  └──                                                                                              │
+│  ┌──                                                                                              │
+│  │ ID: 0xbbb28708ee4f9dbb6d773370063c3ab3c685b24a06a763034d55dc1641cecb32                         │
+│  │ Owner: Shared( 698398603 )                                                                     │
+│  │ Version: 698398603                                                                             │
+│  │ Digest: 3bNPYPBLwW8JecpsqCDwkLquotcANcmcmYXQgV5SvWea                                           │
+│  └──                                                                                              │
+│  ┌──                                                                                              │
+│  │ ID: 0xce8684f5af23c7fd45b1a8d64347ba1d522e77593d0e513474e89d7170808ea4                         │
+│  │ Owner: Immutable                                                                               │
+│  │ Version: 698398603                                                                             │
+│  │ Digest: 9yK8P7np4hn9HjKKMR2ANhwKDVba9VmPeexGjEJfPEti                                           │
+│  └──                                                                                              │
+│  ┌──                                                                                              │
+│  │ ID: 0xd4a427d10fd9999566491e3199358371ec8f240e00e4e1a194d5f83c6069a37b                         │
+│  │ Owner: Shared( 698398603 )                                                                     │
+│  │ Version: 698398603                                                                             │
+│  │ Digest: 5rcDMdJhhDJUJe4FzWPfvD62uFMcxPk18wjppCQ1bJdX                                           │
+│  └──                                                                                              │
+│ Mutated Objects:                                                                                  │
+│  ┌──                                                                                              │
+│  │ ID: 0x182e515e0281c67629fffb0529569e7d831bb38fc7f6a55ea958ec63cac787d6                         │
+│  │ Owner: Account Address ( 0xde3020192a90f75c6d95ba8676e27e1993c85235477d8138867a11423743a156 )  │
+│  │ Version: 698398603                                                                             │
+│  │ Digest: 71R3WSRPSpkB7tW8hGxfbkbY5qYRXtwFWSAsFcLJGP95                                           │
+│  └──                                                                                              │
+│ Gas Object:                                                                                       │
+│  ┌──                                                                                              │
+│  │ ID: 0x182e515e0281c67629fffb0529569e7d831bb38fc7f6a55ea958ec63cac787d6                         │
+│  │ Owner: Account Address ( 0xde3020192a90f75c6d95ba8676e27e1993c85235477d8138867a11423743a156 )  │
+│  │ Version: 698398603                                                                             │
+│  │ Digest: 71R3WSRPSpkB7tW8hGxfbkbY5qYRXtwFWSAsFcLJGP95                                           │
+│  └──                                                                                              │
+│ Gas Cost Summary:                                                                                 │
+│    Storage Cost: 197296000 MIST                                                                   │
+│    Computation Cost: 1690000 MIST                                                                 │
+│    Storage Rebate: 978120 MIST                                                                    │
+│    Non-refundable Storage Fee: 9880 MIST                                                          │
+│                                                                                                   │
+│ Transaction Dependencies:                                                                         │
+│    A9uKk6db7gJYuZcqxZiyNGxbgtjNdDgZihbWbt61qk41                                                   │
+│    B5W8jPYhhxoLZswrEnZ6z6HUog9jwHciKTt3NEbE5p73                                                   │
+╰───────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─────────────────────────────╮
+│ No transaction block events │
+╰─────────────────────────────╯
+
+╭───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Object Changes                                                                                                                │
+├───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┤
+│ Created Objects:                                                                                                              │
+│  ┌──                                                                                                                          │
+│  │ ObjectID: 0x0c68b292bcacb0a48494da215413ac9cbb6d417c735ac24a1126ee003b0b3aee                                               │
+│  │ Sender: 0xde3020192a90f75c6d95ba8676e27e1993c85235477d8138867a11423743a156                                                 │
+│  │ Owner: Account Address ( 0xde3020192a90f75c6d95ba8676e27e1993c85235477d8138867a11423743a156 )                              │
+│  │ ObjectType: 0x2::package::UpgradeCap                                                                                       │
+│  │ Version: 698398603                                                                                                         │
+│  │ Digest: 5mikCoiKnhCV9gxdSoabdw69k53FKahiU2tBvpxfH6f9                                                                       │
+│  └──                                                                                                                          │
+│  ┌──                                                                                                                          │
+│  │ ObjectID: 0x1a38f77f1d6f2de33e72034b398a9d4734ece6eb3d30dff04b33c40aeb9a4e9e                                               │
+│  │ Sender: 0xde3020192a90f75c6d95ba8676e27e1993c85235477d8138867a11423743a156                                                 │
+│  │ Owner: Account Address ( 0xde3020192a90f75c6d95ba8676e27e1993c85235477d8138867a11423743a156 )                              │
+│  │ ObjectType: 0x2::coin::TreasuryCap<0x1823aa8a2c15773de65c06ccb5e801be4edb8e4266513dd680865f6ff5220f2c::h2o_usd::H2O_USD>   │
+│  │ Version: 698398603                                                                                                         │
+│  │ Digest: 29nfYBhq2E1d5zuoH2QPsH6YoLZ1BP8nnjZnT52zDDq6                                                                       │
+│  └──                                                                                                                          │
+│  ┌──                                                                                                                          │
+│  │ ObjectID: 0x973498d044fe6f39bba37771b745236b33034de60635d1528ccbc54c35dc0dc3                                               │
+│  │ Sender: 0xde3020192a90f75c6d95ba8676e27e1993c85235477d8138867a11423743a156                                                 │
+│  │ Owner: Shared( 698398603 )                                                                                                 │
+│  │ ObjectType: 0x1823aa8a2c15773de65c06ccb5e801be4edb8e4266513dd680865f6ff5220f2c::keeper::KeeperRegistry                     │
+│  │ Version: 698398603                                                                                                         │
+│  │ Digest: FFYTTYEP6ELBvTzRAuGgMnaW7hk7t6HTPSn4QH6soEws                                                                       │
+│  └──                                                                                                                          │
+│  ┌──                                                                                                                          │
+│  │ ObjectID: 0xbbb28708ee4f9dbb6d773370063c3ab3c685b24a06a763034d55dc1641cecb32                                               │
+│  │ Sender: 0xde3020192a90f75c6d95ba8676e27e1993c85235477d8138867a11423743a156                                                 │
+│  │ Owner: Shared( 698398603 )                                                                                                 │
+│  │ ObjectType: 0x1823aa8a2c15773de65c06ccb5e801be4edb8e4266513dd680865f6ff5220f2c::h2o_vault::VaultConfig                     │
+│  │ Version: 698398603                                                                                                         │
+│  │ Digest: 3bNPYPBLwW8JecpsqCDwkLquotcANcmcmYXQgV5SvWea                                                                       │
+│  └──                                                                                                                          │
+│  ┌──                                                                                                                          │
+│  │ ObjectID: 0xce8684f5af23c7fd45b1a8d64347ba1d522e77593d0e513474e89d7170808ea4                                               │
+│  │ Sender: 0xde3020192a90f75c6d95ba8676e27e1993c85235477d8138867a11423743a156                                                 │
+│  │ Owner: Immutable                                                                                                           │
+│  │ ObjectType: 0x2::coin::CoinMetadata<0x1823aa8a2c15773de65c06ccb5e801be4edb8e4266513dd680865f6ff5220f2c::h2o_usd::H2O_USD>  │
+│  │ Version: 698398603                                                                                                         │
+│  │ Digest: 9yK8P7np4hn9HjKKMR2ANhwKDVba9VmPeexGjEJfPEti                                                                       │
+│  └──                                                                                                                          │
+│  ┌──                                                                                                                          │
+│  │ ObjectID: 0xd4a427d10fd9999566491e3199358371ec8f240e00e4e1a194d5f83c6069a37b                                               │
+│  │ Sender: 0xde3020192a90f75c6d95ba8676e27e1993c85235477d8138867a11423743a156                                                 │
+│  │ Owner: Shared( 698398603 )                                                                                                 │
+│  │ ObjectType: 0x1823aa8a2c15773de65c06ccb5e801be4edb8e4266513dd680865f6ff5220f2c::yield_optimizer::OptimizerConfig           │
+│  │ Version: 698398603                                                                                                         │
+│  │ Digest: 5rcDMdJhhDJUJe4FzWPfvD62uFMcxPk18wjppCQ1bJdX                                                                       │
+│  └──                                                                                                                          │
+│ Mutated Objects:                                                                                                              │
+│  ┌──                                                                                                                          │
+│  │ ObjectID: 0x182e515e0281c67629fffb0529569e7d831bb38fc7f6a55ea958ec63cac787d6                                               │
+│  │ Sender: 0xde3020192a90f75c6d95ba8676e27e1993c85235477d8138867a11423743a156                                                 │
+│  │ Owner: Account Address ( 0xde3020192a90f75c6d95ba8676e27e1993c85235477d8138867a11423743a156 )                              │
+│  │ ObjectType: 0x2::coin::Coin<0x2::sui::SUI>                                                                                 │
+│  │ Version: 698398603                                                                                                         │
+│  │ Digest: 71R3WSRPSpkB7tW8hGxfbkbY5qYRXtwFWSAsFcLJGP95                                                                       │
+│  └──                                                                                                                          │
+│ Published Objects:                                                                                                            │
+│  ┌──                                                                                                                          │
+│  │ PackageID: 0x1823aa8a2c15773de65c06ccb5e801be4edb8e4266513dd680865f6ff5220f2c                                              │
+│  │ Version: 1                                                                                                                 │
+│  │ Digest: i3eDRR5YVUfi3YQLUtv4mKTSWReyRVhLLM7XB9igTMN                                                                        │
+│  │ Modules: dca_position, h2o_usd, h2o_vault, h2o_vault_v2, h2o_vault_v3_secure, keeper, strategy, yield_optimizer            │
+│  └──                                                                                                                          │
+╰───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭───────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ Balance Changes                                                                                   │
+├───────────────────────────────────────────────────────────────────────────────────────────────────┤
+│  ┌──                                                                                              │
+│  │ Owner: Account Address ( 0xde3020192a90f75c6d95ba8676e27e1993c85235477d8138867a11423743a156 )  │
+│  │ CoinType: 0x2::sui::SUI                                                                        │
+│  │ Amount: -198007880                                                                             │
+│  └──                                                                                              │
+╰───────────────────────────────────────────────────────────────────────────────────────────────────╯
