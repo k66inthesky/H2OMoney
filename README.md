@@ -168,25 +168,15 @@ H2OMoney/
 
 ## 🔗 線上展示
 
-- **Telegram Bot:** [@H2OSmartDCABot](https://t.me/H2OSmartDCABot) *(部署後更新)*
-- **Web dApp:** [https://h2o-smart-dca.vercel.app](https://h2o-smart-dca.vercel.app) *(部署後更新)*
+- **Telegram Bot:** [@H2OSmartBot](@H2OMoneyBot) *(部署後更新)*
+- **Web dApp:** 此版不做 *(部署後更新)*
 - **已部署合約:** `0x...` *(Sui Testnet - 部署後更新)*
 
 ## 💡 為什麼選擇 H2O Smart DCA？
 
-### 傳統 DCA 的問題 ❌
-
-```
-存入 400 USDC → 等待 4 週 → 每週買 100 USDC 的 SUI
-問題：300 USDC 在等待期間完全沒收益
-```
-
-### H2O Smart DCA 解決方案 ✅
-
-```
-存入 400 USDC → 自動轉 H2OUSD 生息 → 每週取出 100 買 SUI
-等待期間的錢也在賺利息，產生額外收益
-```
+### 傳統 直接在Cetus做
+> 小資金不能玩(<3USDC)、小資金也收貴gas不划算、四捨五入吃虧等。
+H2OMoney DCA可解決問題！
 
 ### 🎯 H2OUSD - Shadow Token / Receipt Token 機制
 
