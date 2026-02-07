@@ -4,8 +4,8 @@
 
 import type { BotContext } from '../bot.js';
 import { ConversationStep, StrategyType, IntervalType } from '../utils/types.js';
-import { BOT_CONFIG } from '../utils/constants.js';
-import { positionService, suiClient } from '../services/index.js';
+import { BOT_CONFIG, TOKENS, NETWORK } from '../utils/constants.js';
+import { positionService, stableLayerService, suiClient, walletService } from '../services/index.js';
 
 // /start - 啟動機器人
 export async function startCommand(ctx: BotContext) {
@@ -21,37 +21,126 @@ export async function helpCommand(ctx: BotContext) {
   });
 }
 
-// /connect - 連接錢包
+// /connect - 產生託管錢包
 export async function connectCommand(ctx: BotContext) {
-  // TODO: 實作錢包連接（可能需要 Web App 配合）
-  await ctx.reply(
-    `🔗 *連接 Sui 錢包*
+  const userId = ctx.from?.id;
+  if (!userId) {
+    await ctx.reply('❌ 無法取得用戶 ID');
+    return;
+  }
 
-請點擊下方按鈕連接你的錢包：`,
-    {
-      parse_mode: 'Markdown',
-      reply_markup: {
-        inline_keyboard: [
-          [
-            {
-              text: '🔗 連接錢包',
-              url: `${process.env.WEBAPP_URL || 'https://h2omoney.app'}/connect?tgId=${ctx.from?.id}`,
-            },
-          ],
-        ],
-      },
-    }
+  // 如果已有錢包，直接顯示
+  if (walletService.hasWallet(userId)) {
+    const address = walletService.getAddress(userId)!;
+    ctx.session.walletAddress = address;
+
+    // 查詢餘額
+    const [suiBalance, usdcBalance] = await Promise.all([
+      suiClient.getBalance(address, TOKENS.SUI.address),
+      suiClient.getBalance(address, TOKENS.USDC.address),
+    ]);
+
+    const suiFormatted = (Number(suiBalance) / 1e9).toFixed(4);
+    const usdcFormatted = (Number(usdcBalance) / 1e6).toFixed(2);
+
+    await ctx.reply(
+      `🔗 *你的 H2O 託管錢包*
+
+你已經有一個錢包了！
+
+📍 *地址：*
+\`\`\`
+${address}
+\`\`\`
+
+💰 *餘額：*
+• ${suiFormatted} SUI
+• ${usdcFormatted} USDC
+
+請將 USDC 和少量 SUI（作為 gas）轉入上方地址，然後使用 /new 建立定投。`,
+      { parse_mode: 'Markdown' }
+    );
+    return;
+  }
+
+  // 產生新錢包
+  const wallet = walletService.createWallet(userId);
+  ctx.session.walletAddress = wallet.address;
+
+  await ctx.reply(
+    `🔗 *H2O 託管錢包已建立！*
+
+📍 *你的 Sui 地址：*
+\`\`\`
+${wallet.address}
+\`\`\`
+
+📋 *接下來的步驟：*
+1. 將 USDC 轉入上方地址（定投所需金額）
+2. 轉入少量 SUI 作為 gas 費（建議 ≥ 0.05 SUI）
+3. 使用 /balance 確認餘額到帳
+4. 使用 /new 建立你的 Smart DCA 倉位
+
+⚠️ *注意：*此為 Testnet 託管錢包，Bot 會代你簽名執行鏈上交易。`,
+    { parse_mode: 'Markdown' }
+  );
+}
+
+// /balance - 查詢錢包餘額
+export async function balanceCommand(ctx: BotContext) {
+  const userId = ctx.from?.id;
+  if (!userId || !walletService.hasWallet(userId)) {
+    await ctx.reply('❌ 你還沒有錢包，請先使用 /connect 建立。');
+    return;
+  }
+
+  const address = walletService.getAddress(userId)!;
+
+  const [suiBalance, usdcBalance] = await Promise.all([
+    suiClient.getBalance(address, TOKENS.SUI.address),
+    suiClient.getBalance(address, TOKENS.USDC.address),
+  ]);
+
+  const suiFormatted = (Number(suiBalance) / 1e9).toFixed(4);
+  const usdcFormatted = (Number(usdcBalance) / 1e6).toFixed(2);
+
+  let gasWarning = '';
+  if (suiBalance < 50_000_000n) {
+    // < 0.05 SUI
+    gasWarning = '\n⚠️ *SUI 餘額過低！*建議至少 0.05 SUI 作為 gas 費。';
+  }
+
+  await ctx.reply(
+    `💰 *錢包餘額*
+
+📍 地址：\`${address.slice(0, 8)}...${address.slice(-6)}\`
+
+• ${suiFormatted} SUI
+• ${usdcFormatted} USDC${gasWarning}
+
+🔗 [在 Explorer 查看](${NETWORK.TESTNET.explorerUrl}/account/${address})`,
+    { parse_mode: 'Markdown' }
   );
 }
 
 // /new - 建立新定投
 export async function newCommand(ctx: BotContext) {
-  // 檢查錢包連接
-  if (!ctx.session.walletAddress) {
-    // 暫時跳過錢包檢查，方便測試
-    // await ctx.reply(BOT_CONFIG.MESSAGES.NO_WALLET);
-    // return;
+  const userId = ctx.from?.id;
+  if (!userId) {
+    await ctx.reply('❌ 無法取得用戶 ID');
+    return;
   }
+
+  // 檢查錢包
+  if (!walletService.hasWallet(userId)) {
+    await ctx.reply(
+      '❌ 請先使用 /connect 建立託管錢包，並轉入 USDC + SUI 後再建立定投。'
+    );
+    return;
+  }
+
+  // 設置 session 中的錢包地址
+  ctx.session.walletAddress = walletService.getAddress(userId);
 
   ctx.session.conversation = {
     step: ConversationStep.SELECT_STRATEGY,
@@ -83,8 +172,13 @@ export async function newCommand(ctx: BotContext) {
 
 // /list - 查看所有倉位
 export async function listCommand(ctx: BotContext) {
-  // 暫時使用 mock user address，實際應該從 session 中獲取
-  const userAddress = ctx.session.walletAddress || 'mock_user';
+  const userId = ctx.from?.id;
+  if (!userId || !walletService.hasWallet(userId)) {
+    await ctx.reply('❌ 請先使用 /connect 建立錢包');
+    return;
+  }
+
+  const userAddress = walletService.getAddress(userId)!;
   const positions = positionService.getUserPositions(userAddress);
 
   if (positions.length === 0) {
@@ -151,6 +245,11 @@ export async function statusCommand(ctx: BotContext) {
   // 查詢收益統計
   const yieldStats = await positionService.getPositionYield(positionId);
 
+  let txLine = '';
+  if (position.txDigest) {
+    txLine = `\n🔗 [查看存款交易](${NETWORK.TESTNET.explorerUrl}/tx/${position.txDigest})`;
+  }
+
   await ctx.reply(
     `📊 *倉位詳情*
 
@@ -178,7 +277,7 @@ ${
     : '• 暫無收益數據'
 }
 
-⏰ 下次執行：${nextExecution} UTC`,
+⏰ 下次執行：${nextExecution} UTC${txLine}`,
     {
       parse_mode: 'Markdown',
       reply_markup: {
@@ -293,19 +392,29 @@ export async function closeCommand(ctx: BotContext) {
 
 // /yield - 查看收益統計
 export async function yieldCommand(ctx: BotContext) {
+  const userId = ctx.from?.id;
+  if (!userId || !walletService.hasWallet(userId)) {
+    await ctx.reply('❌ 請先使用 /connect 建立錢包');
+    return;
+  }
+
   try {
+    const userAddress = walletService.getAddress(userId)!;
+
     // 查詢金庫狀態
     const vaultState = await suiClient.getVaultState();
     const h2ousdValue = await suiClient.getH2OUSDValue();
 
-    // 暫時使用 mock user address
-    const userAddress = ctx.session.walletAddress || 'mock_user';
     const userAssets = await suiClient.getUserAssets(userAddress);
 
     const totalDeposited = Number(vaultState.totalDeposited) / 1_000_000;
     const totalYield = Number(vaultState.totalYieldEarned) / 1_000_000;
     const userH2ousd = Number(userAssets.totalH2OUSD) / 1_000_000;
     const userValue = userH2ousd * h2ousdValue;
+
+    const brandUsdSupply = await stableLayerService.getBrandUsdTotalSupply(userAddress);
+    const brandUsdDecimals = Number(process.env.STABLELAYER_BRAND_USD_DECIMALS || '6');
+    const brandUsdSupplyFormatted = formatAmount(brandUsdSupply, brandUsdDecimals);
 
     // 模擬分拆收益來源（實際應該從合約事件查詢）
     const yieldFromBrandUsd = totalYield * 0.6;
@@ -327,6 +436,7 @@ export async function yieldCommand(ctx: BotContext) {
 • BrandUSD 底層收益：${yieldFromBrandUsd.toFixed(2)} USDC
 • CLMM LP 手續費：${yieldFromClmm.toFixed(2)} USDC
 
+*StableLayer BrandUSD 總供應:* ${brandUsdSupplyFormatted}
 *當前 APY:* ~${apy.toFixed(1)}%
 *H2OUSD 價值:* ${h2ousdValue.toFixed(6)} USDC
 
@@ -351,4 +461,18 @@ function getIntervalTextFromMs(ms: number): string {
   if (ms === 14 * day) return '每兩週';
   if (ms === 30 * day) return '每月';
   return `每 ${Math.floor(ms / day)} 天`;
+}
+
+function formatAmount(amount: bigint, decimals: number): string {
+  if (decimals <= 0) {
+    return amount.toString();
+  }
+  const base = 10n ** BigInt(decimals);
+  const whole = amount / base;
+  const fraction = amount % base;
+  const fractionStr = fraction.toString().padStart(decimals, '0').replace(/0+$/, '');
+  if (!fractionStr) {
+    return whole.toString();
+  }
+  return `${whole.toString()}.${fractionStr}`;
 }

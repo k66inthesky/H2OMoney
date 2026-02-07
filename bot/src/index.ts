@@ -39,7 +39,9 @@ async function main() {
       console.log(`✅ Bot started as @${botInfo.username}`);
       console.log('📋 Available commands:');
       console.log('   /start - 啟動機器人');
-      console.log('   /new - 建立新定投');
+      console.log('   /connect - 建立託管錢包');
+      console.log('   /balance - 查詢錢包餘額');
+      console.log('   /new - 建立新定投（鏈上存款）');
       console.log('   /list - 查看所有倉位');
       console.log('   /yield - 查看收益');
       console.log('   /help - 幫助說明');

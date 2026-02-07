@@ -20,6 +20,7 @@ export interface DCAPosition {
   totalInvested: bigint;
   totalAcquired: bigint;
   averagePrice: bigint;
+  txDigest?: string;
   status: PositionStatus;
   createdAt: number;
   updatedAt: number;

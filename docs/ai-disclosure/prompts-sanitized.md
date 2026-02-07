@@ -25,7 +25,20 @@
 
 ---
 
-### Session 2: [Module Name] (2026-01-XX)
+### Session 2: Telegram Bot SDK Integration (2026-02-07)
+
+**Purpose:** Integrate Cetus Aggregator SDK and StableLayer SDK into the Telegram bot
+
+**Prompt:**
+```
+這黑客松比賽有強調要用到cetus SDK及stablelayer SDK，請你檢查你是否有做到。請你先規劃，然後二個都要有用到，結合在我Telegram bot。開始
+```
+
+**Output:** Added SDK dependencies, wrapper services, and bot integrations for DCA routing and yield stats
+
+---
+
+### Session 3: [Module Name] (2026-01-XX)
 
 **Purpose:** 
 

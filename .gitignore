@@ -33,6 +33,10 @@ logs/
 *.log
 npm-debug.log*
 
+# Bot runtime data
+bot/data/
+bot/data/*.json
+
 # Testing
 coverage/
 
