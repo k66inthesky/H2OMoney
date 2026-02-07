@@ -14,6 +14,31 @@ H2O Smart DCA 是一款基於 Sui 區塊鏈的智能定投機器人，整合 Cet
 **參賽賽道：** Cetus + stablelayer（雙賽道）
 **專案定位：** 智能定投 + 自動生息金庫
 
+## ✅ SDK 使用點 (Required)
+
+- **Cetus Aggregator SDK** (`@cetusprotocol/aggregator-sdk`)
+  - `bot/src/services/cetus-aggregator.ts` (findRouters + routerSwap)
+  - `bot/src/services/position-service.ts` (executeDCA: 取得路由並鏈上 swap)
+- **StableLayer SDK** (vendor: `bot/src/vendor/stable-layer-sdk`)
+  - `bot/src/services/stablelayer.ts` (StableLayerClient.getTotalSupplyByCoinType)
+  - `bot/src/commands/index.ts` (`/yield` 顯示 BrandUSD 總供應)
+
+## 🔁 User Flow (Telegram Bot)
+
+```
+/connect -> 建立託管錢包
+   |
+/new -> 設定定投策略 (金額/週期/目標)
+   |
+確認建立 -> on-chain deposit (H2OUSD)
+   |
+排程觸發 executeDCA
+   |-- Cetus Aggregator SDK: findRouters -> routerSwap -> swap execution
+   |
+/yield
+   |-- StableLayer SDK: getTotalSupplyByCoinType -> 顯示 BrandUSD 總供應
+```
+
 ## ✨ 核心功能
 
 - 💰 **智能定投** - 支援固定金額、限價買入、多幣種等多種策略

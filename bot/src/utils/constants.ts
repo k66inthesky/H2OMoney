@@ -35,6 +35,13 @@ export const TOKENS = {
     decimals: 6,
     iconUrl: 'https://cryptologos.cc/logos/usd-coin-usdc-logo.png',
   },
+  CETUS: {
+    address: '0x06864a6f921804860930db6ddbe2e16acdf8504495ea7481637a1c8b9a8fe54b::cetus::CETUS',
+    symbol: 'CETUS',
+    name: 'Cetus Token',
+    decimals: 9,
+    iconUrl: 'https://app.cetus.zone/static/media/cetus.png',
+  },
 } as const;
 
 // ============ 網路配置 ============
@@ -71,7 +78,8 @@ export const BOT_CONFIG = {
 📖 *H2O Smart DCA 指令說明*
 
 🔗 *錢包相關*
-/connect - 連接 Sui 錢包
+/connect - 建立託管錢包
+/balance - 查詢錢包餘額
 
 💰 *定投管理*
 /new - 建立新定投倉位

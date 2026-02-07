@@ -2,8 +2,12 @@
  * H2O Smart DCA - 倉位管理服務
  */
 
+import { Transaction } from '@mysten/sui/transactions';
 import { DCAPosition, DCAConfig, PositionStatus, IntervalType, INTERVAL_MS } from '../utils/types.js';
+import { TOKENS } from '../utils/constants.js';
+import { cetusAggregatorService } from './cetus-aggregator.js';
 import { suiClient } from './sui-client.js';
+import { walletService } from './wallet-service.js';
 
 /**
  * 倉位存儲（簡單實作，生產環境應使用數據庫）
@@ -218,26 +222,71 @@ export class PositionService {
     try {
       console.log(`🔄 Executing DCA for position ${positionId}...`);
 
-      // TODO: 實際執行流程：
+      // 實際執行流程：
       // 1. 從金庫取出 amountPerPeriod 的 H2OUSD
       // 2. Burn H2OUSD 換回 USDC
       // 3. 使用 Cetus Aggregator 找最佳路徑
       // 4. 執行交易買入目標代幣
       // 5. 將買到的代幣發送給用戶
 
-      // 模擬執行
+      const targetSymbol = position.targetTokens[0]?.symbol || 'SUI';
+      const userKeypair = walletService.getKeypairByAddress(position.owner);
+
+      const { router, toDecimals } = await cetusAggregatorService.findRouters({
+        signer: position.owner,
+        fromSymbol: 'USDC',
+        toSymbol: targetSymbol,
+        amountIn: position.amountPerPeriod,
+      });
+
+      const tx = new Transaction();
+      const inputCoin = await suiClient.buildInputCoin({
+        owner: position.owner,
+        coinType: TOKENS.USDC.address,
+        amount: position.amountPerPeriod,
+        tx,
+      });
+
+      const outputCoin = await cetusAggregatorService.buildRouterSwap({
+        signer: position.owner,
+        router,
+        inputCoin,
+        slippage: 0.01,
+        txb: tx,
+      });
+
+      tx.transferObjects([outputCoin], tx.pure.address(position.owner));
+
+      const inspectResult = await cetusAggregatorService.devInspectTransaction(
+        position.owner,
+        tx
+      );
+      if (inspectResult.effects?.status?.status !== 'success') {
+        throw new Error('Cetus swap simulation failed');
+      }
+
+      const swapResult = await cetusAggregatorService.sendTransaction(
+        position.owner,
+        tx,
+        userKeypair
+      );
+      if (swapResult.effects?.status?.status !== 'success') {
+        throw new Error(`Cetus swap failed: ${swapResult.effects?.status?.error}`);
+      }
+
+      const amountOut = BigInt(router.amountOut.toString());
+
       const amountInUsdc = Number(position.amountPerPeriod) / 1_000_000;
-      const mockPrice = 3.5 + Math.random() * 0.5; // 模擬 SUI 價格
-      const amountAcquired = amountInUsdc / mockPrice;
+      const amountAcquired = Number(amountOut) / 10 ** toDecimals;
 
       console.log(`   Amount spent: ${amountInUsdc} USDC`);
-      console.log(`   Price: ${mockPrice.toFixed(4)} USDC`);
-      console.log(`   Acquired: ${amountAcquired.toFixed(4)} SUI`);
+      console.log(`   Router amount out: ${amountOut.toString()}`);
+      console.log(`   Acquired: ${amountAcquired.toFixed(4)} ${targetSymbol}`);
 
       // 更新倉位統計
       position.executedPeriods += 1;
       position.totalInvested += position.amountPerPeriod;
-      position.totalAcquired += BigInt(Math.floor(amountAcquired * 1e9)); // SUI 9 decimals
+      position.totalAcquired += amountOut;
 
       // 更新平均價格
       if (position.totalAcquired > 0n) {

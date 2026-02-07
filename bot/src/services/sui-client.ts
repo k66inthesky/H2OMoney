@@ -2,8 +2,12 @@
  * H2O Smart DCA - Sui 客戶端服務
  */
 
-import { SuiClient, type SuiTransactionBlockResponse } from '@mysten/sui/client';
-import { Transaction } from '@mysten/sui/transactions';
+import {
+  SuiClient,
+  type DevInspectResults,
+  type SuiTransactionBlockResponse,
+} from '@mysten/sui/client';
+import { Transaction, type TransactionObjectArgument } from '@mysten/sui/transactions';
 import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 import { NETWORK, CONTRACT_ADDRESSES, TOKENS } from '../utils/constants.js';
 
@@ -300,6 +304,159 @@ export class SuiClientService {
       coinType: '0x2::sui::SUI',
     });
     return coins.data;
+  }
+
+  /**
+   * 查詢用戶的指定代幣 coins
+   */
+  async getCoins(address: string, coinType: string) {
+    const coins = await this.client.getCoins({
+      owner: address,
+      coinType,
+    });
+    return coins.data;
+  }
+
+  /**
+   * 為 swap 或 mint 建立輸入 coin（合併 + 切分）
+   */
+  async buildInputCoin(params: {
+    owner: string;
+    coinType: string;
+    amount: bigint;
+    tx: Transaction;
+  }): Promise<TransactionObjectArgument> {
+    const { owner, coinType, amount, tx } = params;
+    const coins = await this.getCoins(owner, coinType);
+
+    if (coins.length === 0) {
+      throw new Error(`No ${coinType} coins found for ${owner}`);
+    }
+
+    const totalBalance = coins.reduce(
+      (sum, coin) => sum + BigInt(coin.balance),
+      0n
+    );
+
+    if (totalBalance < amount) {
+      throw new Error(
+        `${coinType} balance insufficient: need ${amount.toString()}, have ${totalBalance.toString()}`
+      );
+    }
+
+    if (coins.length === 1) {
+      const [splitCoin] = tx.splitCoins(tx.object(coins[0].coinObjectId), [amount]);
+      return splitCoin;
+    }
+
+    const primaryCoin = coins[0].coinObjectId;
+    const otherCoins = coins.slice(1).map((c) => tx.object(c.coinObjectId));
+    tx.mergeCoins(tx.object(primaryCoin), otherCoins);
+    const [splitCoin] = tx.splitCoins(tx.object(primaryCoin), [amount]);
+    return splitCoin;
+  }
+
+  /**
+   * 模擬交易
+   */
+  async devInspectTransaction(
+    signer: Ed25519Keypair,
+    tx: Transaction
+  ): Promise<DevInspectResults> {
+    return this.client.devInspectTransactionBlock({
+      transactionBlock: tx,
+      sender: signer.getPublicKey().toSuiAddress(),
+    });
+  }
+
+  /**
+   * 簽名並執行交易
+   */
+  async signAndExecute(
+    signer: Ed25519Keypair,
+    tx: Transaction
+  ): Promise<SuiTransactionBlockResponse> {
+    return this.client.signAndExecuteTransaction({
+      signer,
+      transaction: tx,
+      options: {
+        showEffects: true,
+        showEvents: true,
+      },
+    });
+  }
+
+  /**
+   * 為用戶執行存款到金庫（託管模式）
+   *
+   * 1. 查詢用戶的 USDC coins
+   * 2. 多幣時先 mergeCoins 合併
+   * 3. splitCoins 切出需要的金額
+   * 4. 呼叫合約 secure_deposit_entry
+   * 5. 用用戶的 keypair 簽名執行
+   */
+  async depositForUser(
+    signer: Ed25519Keypair,
+    amount: bigint
+  ): Promise<SuiTransactionBlockResponse> {
+    const userAddress = signer.getPublicKey().toSuiAddress();
+
+    // 查詢用戶的 USDC coins
+    const usdcCoins = await this.getCoins(userAddress, TOKENS.USDC.address);
+
+    if (usdcCoins.length === 0) {
+      throw new Error('用戶沒有 USDC');
+    }
+
+    // 計算總餘額
+    const totalBalance = usdcCoins.reduce(
+      (sum, coin) => sum + BigInt(coin.balance),
+      0n
+    );
+
+    if (totalBalance < amount) {
+      throw new Error(
+        `USDC 餘額不足：需要 ${Number(amount) / 1_000_000} USDC，` +
+        `但只有 ${Number(totalBalance) / 1_000_000} USDC`
+      );
+    }
+
+    const tx = new Transaction();
+
+    let coinToUse: ReturnType<typeof tx.splitCoins>[0];
+
+    if (usdcCoins.length === 1) {
+      // 只有一個 coin，直接 split
+      [coinToUse] = tx.splitCoins(tx.object(usdcCoins[0].coinObjectId), [amount]);
+    } else {
+      // 多個 coins，先 merge 再 split
+      const primaryCoin = usdcCoins[0].coinObjectId;
+      const otherCoins = usdcCoins.slice(1).map((c) => tx.object(c.coinObjectId));
+      tx.mergeCoins(tx.object(primaryCoin), otherCoins);
+      [coinToUse] = tx.splitCoins(tx.object(primaryCoin), [amount]);
+    }
+
+    // 調用 secure_deposit_entry
+    tx.moveCall({
+      target: `${CONTRACT_ADDRESSES.PACKAGE_ID}::h2o_vault_v3_secure::secure_deposit_entry`,
+      arguments: [
+        tx.object(CONTRACT_ADDRESSES.VAULT_CONFIG),
+        coinToUse,
+        tx.object('0x6'), // clock
+      ],
+      typeArguments: [TOKENS.USDC.address],
+    });
+
+    const result = await this.client.signAndExecuteTransaction({
+      signer,
+      transaction: tx,
+      options: {
+        showEffects: true,
+        showEvents: true,
+      },
+    });
+
+    return result;
   }
 }
 

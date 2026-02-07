@@ -14,9 +14,11 @@ import {
   closeCommand,
   yieldCommand,
   connectCommand,
+  balanceCommand,
 } from './commands/index.js';
 import { ConversationState, ConversationStep, DCAConfig, StrategyType, IntervalType } from './utils/types.js';
-import { positionService } from './services/index.js';
+import { positionService, suiClient, walletService } from './services/index.js';
+import { TOKENS, NETWORK } from './utils/constants.js';
 
 // Session 類型
 interface SessionData {
@@ -42,6 +44,15 @@ export function createBot(token: string): Bot<BotContext> {
   // 使用 session 中間件
   bot.use(session({ initial: initialSession }));
 
+  // Middleware：Bot 重啟後自動從 wallets.json 恢復 walletAddress
+  bot.use(async (ctx, next) => {
+    const userId = ctx.from?.id;
+    if (userId && !ctx.session.walletAddress && walletService.hasWallet(userId)) {
+      ctx.session.walletAddress = walletService.getAddress(userId);
+    }
+    await next();
+  });
+
   // 錯誤處理
   bot.catch((err) => {
     console.error('Bot error:', err);
@@ -51,6 +62,7 @@ export function createBot(token: string): Bot<BotContext> {
   bot.command('start', startCommand);
   bot.command('help', helpCommand);
   bot.command('connect', connectCommand);
+  bot.command('balance', balanceCommand);
   bot.command('new', newCommand);
   bot.command('list', listCommand);
   bot.command('status', statusCommand);
@@ -231,64 +243,9 @@ async function handleCallbackQuery(ctx: BotContext) {
     return;
   }
 
-  // 確認建立
+  // 確認建立 — 鏈上存款流程
   if (data === 'confirm_create') {
-    const { data: configData } = ctx.session.conversation;
-
-    try {
-      // 構建 DCA 配置
-      const dcaConfig: DCAConfig = {
-        sourceToken: 'USDC',
-        targetTokens: configData.targetTokens || [],
-        amountPerPeriod: configData.amountPerPeriod || '0',
-        interval: mapIntervalStringToEnum(configData.interval),
-        totalPeriods: configData.totalPeriods || 1,
-        strategy: configData.strategy || StrategyType.FIXED,
-        limitPrice: configData.limitPrice,
-        enableYield: true,
-        autoCompound: false,
-      };
-
-      // 創建倉位（暫時使用 mock user address）
-      const userAddress = ctx.session.walletAddress || `user_${ctx.from?.id}`;
-      const position = await positionService.createPosition(userAddress, dcaConfig);
-
-      const nextExecution = new Date(position.nextExecutionTime)
-        .toISOString()
-        .replace('T', ' ')
-        .substring(0, 16);
-
-      await ctx.editMessageText(
-        `✅ *Smart DCA 倉位已建立！*
-
-📋 倉位 ID（點擊複製）：
-\`\`\`
-${position.id}
-\`\`\`
-
-🔄 *運作流程：*
-1. 資金已轉換為 H2OUSD
-2. 資金已投入生息金庫
-3. 每${getIntervalText(configData.interval)}自動執行定投
-
-⏰ 下次執行：${nextExecution} UTC
-
-使用 /status \`${position.id}\` 查看詳情`,
-        { parse_mode: 'Markdown' }
-      );
-    } catch (error) {
-      console.error('Failed to create position:', error);
-      const errMsg = error instanceof Error ? error.message : String(error);
-      await ctx.editMessageText(
-        `❌ 建立倉位失敗，請稍後再試\n\n錯誤：${errMsg}`
-      );
-    }
-
-    // 重置對話狀態
-    ctx.session.conversation = {
-      step: ConversationStep.IDLE,
-      data: {},
-    };
+    await handleConfirmCreate(ctx);
     return;
   }
 
@@ -389,6 +346,155 @@ ${position.id}
   }
 }
 
+/**
+ * 確認建立倉位 — 執行鏈上存款
+ */
+async function handleConfirmCreate(ctx: BotContext) {
+  const { data: configData } = ctx.session.conversation;
+  const userId = ctx.from?.id;
+
+  if (!userId || !walletService.hasWallet(userId)) {
+    await ctx.editMessageText('❌ 錢包未建立，請先使用 /connect');
+    ctx.session.conversation = { step: ConversationStep.IDLE, data: {} };
+    return;
+  }
+
+  const userAddress = walletService.getAddress(userId)!;
+  const amountPerPeriod = parseFloat(configData.amountPerPeriod || '0');
+  const totalPeriods = configData.totalPeriods || 1;
+  const totalAmountUsdc = amountPerPeriod * totalPeriods;
+  const totalAmountRaw = BigInt(Math.floor(totalAmountUsdc * 1_000_000)); // USDC 6 decimals
+
+  // 顯示處理中
+  await ctx.editMessageText('⏳ 正在檢查餘額並執行鏈上存款...');
+
+  try {
+    // 1. 檢查 USDC 餘額
+    const usdcBalance = await suiClient.getBalance(userAddress, TOKENS.USDC.address);
+    if (usdcBalance < totalAmountRaw) {
+      const has = (Number(usdcBalance) / 1_000_000).toFixed(2);
+      const needs = totalAmountUsdc.toFixed(2);
+      await ctx.editMessageText(
+        `❌ *USDC 餘額不足*
+
+需要：${needs} USDC
+擁有：${has} USDC
+
+請轉入足夠的 USDC 到你的託管錢包：
+\`\`\`
+${userAddress}
+\`\`\`
+
+轉入後使用 /balance 確認，再重新 /new 建立倉位。`,
+        { parse_mode: 'Markdown' }
+      );
+      ctx.session.conversation = { step: ConversationStep.IDLE, data: {} };
+      return;
+    }
+
+    // 2. 檢查 SUI gas
+    const suiBalance = await suiClient.getBalance(userAddress, TOKENS.SUI.address);
+    if (suiBalance < 50_000_000n) {
+      // < 0.05 SUI
+      const has = (Number(suiBalance) / 1e9).toFixed(4);
+      await ctx.editMessageText(
+        `⚠️ *SUI (gas) 不足*
+
+目前 SUI 餘額：${has} SUI
+建議至少 0.05 SUI 作為 gas 費。
+
+請轉入 SUI 到你的託管錢包：
+\`\`\`
+${userAddress}
+\`\`\`
+
+轉入後使用 /balance 確認，再重新 /new 建立倉位。`,
+        { parse_mode: 'Markdown' }
+      );
+      ctx.session.conversation = { step: ConversationStep.IDLE, data: {} };
+      return;
+    }
+
+    // 3. 取得 keypair 並執行鏈上存款
+    const keypair = walletService.getKeypair(userId);
+    const result = await suiClient.depositForUser(keypair, totalAmountRaw);
+
+    // 4. 驗證交易成功
+    const txStatus = result.effects?.status?.status;
+    if (txStatus !== 'success') {
+      const errMsg = result.effects?.status?.error || 'Unknown error';
+      throw new Error(`交易失敗: ${errMsg}`);
+    }
+
+    const txDigest = result.digest;
+
+    // 5. 建立倉位記錄
+    const dcaConfig: DCAConfig = {
+      sourceToken: 'USDC',
+      targetTokens: configData.targetTokens || [],
+      amountPerPeriod: configData.amountPerPeriod || '0',
+      interval: mapIntervalStringToEnum(configData.interval),
+      totalPeriods,
+      strategy: configData.strategy || StrategyType.FIXED,
+      limitPrice: configData.limitPrice,
+      enableYield: true,
+      autoCompound: false,
+    };
+
+    const position = await positionService.createPosition(userAddress, dcaConfig);
+
+    // 設置 txDigest
+    position.txDigest = txDigest;
+
+    const nextExecution = new Date(position.nextExecutionTime)
+      .toISOString()
+      .replace('T', ' ')
+      .substring(0, 16);
+
+    await ctx.editMessageText(
+      `✅ *Smart DCA 倉位已建立！*
+
+📋 倉位 ID（點擊複製）：
+\`\`\`
+${position.id}
+\`\`\`
+
+💰 *鏈上存款成功：*
+• 存入金額：${totalAmountUsdc} USDC
+• 交易 Hash：\`${txDigest.slice(0, 12)}...\`
+
+🔗 [在 Explorer 查看交易](${NETWORK.TESTNET.explorerUrl}/tx/${txDigest})
+
+🔄 *運作流程：*
+1. ${totalAmountUsdc} USDC 已存入生息金庫
+2. 資金自動轉換為 H2OUSD 生息
+3. 每${getIntervalText(configData.interval)}自動執行定投
+
+⏰ 下次執行：${nextExecution} UTC
+
+使用 /status \`${position.id}\` 查看詳情`,
+      { parse_mode: 'Markdown' }
+    );
+  } catch (error) {
+    console.error('Failed to create position with on-chain deposit:', error);
+    const errMsg = error instanceof Error ? error.message : String(error);
+    await ctx.editMessageText(
+      `❌ *建立倉位失敗*
+
+錯誤：${errMsg}
+
+請稍後再試，或使用 /balance 檢查餘額。`,
+      { parse_mode: 'Markdown' }
+    );
+  }
+
+  // 重置對話狀態
+  ctx.session.conversation = {
+    step: ConversationStep.IDLE,
+    data: {},
+  };
+}
+
 function getIntervalText(interval?: string): string {
   const map: Record<string, string> = {
     daily: '每日',
@@ -397,19 +503,6 @@ function getIntervalText(interval?: string): string {
     monthly: '每月',
   };
   return map[interval || ''] || interval || '';
-}
-
-function getNextExecutionTime(interval?: string): string {
-  const now = new Date();
-  const msMap: Record<string, number> = {
-    daily: 24 * 60 * 60 * 1000,
-    weekly: 7 * 24 * 60 * 60 * 1000,
-    biweekly: 14 * 24 * 60 * 60 * 1000,
-    monthly: 30 * 24 * 60 * 60 * 1000,
-  };
-  const ms = msMap[interval || ''] || msMap.weekly;
-  const next = new Date(now.getTime() + ms);
-  return next.toISOString().replace('T', ' ').substring(0, 16) + ' UTC';
 }
 
 function mapIntervalStringToEnum(interval?: string): IntervalType {

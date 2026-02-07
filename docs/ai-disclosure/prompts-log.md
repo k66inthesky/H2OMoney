@@ -39,6 +39,23 @@
 
 ## Prompt 記錄
 
+### 2026-02-07 Telegram Bot SDK 整合
+
+**目的：** 在 Telegram bot 中實際整合 Cetus Aggregator SDK 與 StableLayer SDK
+
+**Prompt：**
+> 這黑客松比賽有強調要用到cetus SDK及stablelayer SDK，請你檢查你是否有做到。請你先規劃，然後二個都要有用到，結合在我Telegram bot。開始
+
+**AI 回應摘要：**
+- 新增 Cetus Aggregator SDK 與 StableLayer SDK 依賴
+- 建立 SDK wrapper 服務並在 DCA 執行與收益查詢中呼叫
+- 更新環境變數範例與型別宣告
+
+**後續修改：**
+- （無）
+
+---
+
 ### 2026-02-04 專案初始化
 
 **目的：** 設定 Claude Code CLI 專案配置，建立開發規範
