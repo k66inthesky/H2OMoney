@@ -286,4 +286,4 @@ MIT License - see [LICENSE](./LICENSE)
 
 ---
 
-**Built with 💧 for Sui Vibe Hackathon 2026**
+**Built with 💧 for [Sui Hackathon Taiwan](https://www.deepsurge.xyz/projects/f399b751-3596-4b45-a687-7e70afcd0d80)**
